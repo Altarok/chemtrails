@@ -1,0 +1,9 @@
+{
+	"id": "chemtrails",
+	"name": "Chem trails",
+	"version": "0.1.0",
+	"minAppVersion": "1.12.7",
+	"description": "Obsidian plugin to draw molecules",
+	"author": "Altarok",
+	"isDesktopOnly": false
+}
