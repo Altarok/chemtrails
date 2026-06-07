@@ -22,17 +22,19 @@ export default class FantasyGanttPlugin extends Plugin {
     // 3. Set up the target SVG element with responsive attributes
     const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svgEl.setAttribute('width', '600');
-    svgEl.setAttribute('height', '200');
+    svgEl.setAttribute('height', '400');
     container.appendChild(svgEl);
 
     // 4. Initialize the SvgDrawer with styling options
+    const virtualSize = 500;
     const svgDrawer = new SmilesDrawer.SvgDrawer({
-      // width: 300,
-      // height: 300,
+      width: virtualSize,
+      height: virtualSize,
       bondThickness: 1.5,
       fontSizeLarge: 12,
       overlapMax: 1,
-      compactDrawing: false
+      compactDrawing: false,
+      isometric: true
     });
 
     // 5. Detect the current Obsidian theme to choose a color palette
@@ -42,6 +44,30 @@ export default class FantasyGanttPlugin extends Plugin {
     // 6. Parse and render
     SmilesDrawer.parse(smilesString, (tree) => {
       svgDrawer.draw(tree, svgEl, themeMode);
+
+      // // 3. THE TRICK: Ask the browser to calculate the exact bounding box
+      // // of all the paths inside the SVG that were just drawn.
+      // const bbox = svgEl.getBBox();
+      //
+      // // Add a small pixel padding buffer so atom labels don't clip at the edges
+      // const padding = 20;
+      //
+      // const x = bbox.x - padding;
+      // const y = bbox.y - padding;
+      // const width = bbox.width + (padding * 2);
+      // const height = bbox.height + (padding * 2);
+      //
+      // // 4. Update the viewBox to frame ONLY the area where the molecule exists
+      // svgEl.setAttribute('viewBox', `${x} ${y} ${width} ${height}`);
+      //
+      // // 5. Remove hardcoded width/height attributes so CSS can take over scaling smoothly
+      // svgEl.removeAttribute('width');
+      // svgEl.removeAttribute('height');
+      //
+      // // Optional: Clamp the maximum display size using inline styles
+      // // so simple molecules stay small, but large ones scale down naturally.
+      // svgEl.style.maxWidth = `${Math.min(width, 400)}px`;
+      // svgEl.style.height = 'auto';
     }, (error) => {
       // If parsing fails, display the error directly where the code block was
       container.setText(`SMILES Error: ${error.message}`);
