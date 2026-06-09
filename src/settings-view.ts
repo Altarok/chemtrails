@@ -129,7 +129,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
   private addNumericSetting(container: HTMLElement, name: string, desc: string, key: keyof OriginalSmilesDrawerNumericSettings, isInteger: boolean) {
     const pattern: RegExp = isInteger ? nonNegativeIntegerPattern : nonNegativeNumberPattern;
 
-    const defaultValue: number = DEFAULT_SETTINGS[key] as number
+    const defaultValue: number = DEFAULT_SETTINGS[key]
 
     new Setting(container)
     .setName(name)
