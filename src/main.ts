@@ -26,10 +26,10 @@ export default class SmilesDrawerToObsidian extends Plugin {
     container.appendChild(svgEl);
 
     // 4. Initialize the SvgDrawer with styling options
-    const virtualSize = 500;
+    // const virtualSize = 500;
     const svgDrawer = new SmilesDrawer.SvgDrawer({
-      width: virtualSize,
-      height: virtualSize,
+      // width: virtualSize,
+      // height: virtualSize,
       bondThickness: 1,
       fontSizeLarge: 11,
       overlapMax: 1,

@@ -1,10 +1,17 @@
+# Node dependencies and build tracking
 /node_modules
-
-# IDE data
-.idea
-
-# Ignore compiled main.js, upload to GitHub release instead.
+package-lock.json
+.npm
+# Compilation outputs
 main.js
-
-# Ignore user settings changed by Obsidian
+# Local environment and developer tools overrides
+.env
+*.log
+# System junk files
+.DS_Store
+Thumbs.db
+# IDE data and workspace persistence
+.idea/
+.vscode/
+# Obsidian sandbox overrides
 data.json

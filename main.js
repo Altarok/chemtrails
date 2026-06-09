@@ -13559,10 +13559,9 @@ var SmilesDrawerToObsidian = class extends import_obsidian.Plugin {
     svgEl.setAttribute("width", "600");
     svgEl.setAttribute("height", "300");
     container.appendChild(svgEl);
-    const virtualSize = 500;
     const svgDrawer = new app_default.SvgDrawer({
-      width: virtualSize,
-      height: virtualSize,
+      // width: virtualSize,
+      // height: virtualSize,
       bondThickness: 1,
       fontSizeLarge: 11,
       overlapMax: 1,
