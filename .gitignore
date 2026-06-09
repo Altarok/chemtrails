@@ -1,6 +1,5 @@
 # Node dependencies and build tracking
 /node_modules
-package-lock.json
 .npm
 # Compilation outputs
 main.js
