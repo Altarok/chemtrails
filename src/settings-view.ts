@@ -8,8 +8,6 @@ const nonNegativeNumberPattern = /^\d+(\.\d+)?$/
 
 /* See https://docs.obsidian.md/Plugins/User+interface/Settings  */
 export default class SmilesDrawerSettingsTab extends PluginSettingTab {
-
-
   constructor(app: App, readonly plugin: SmilesDrawerToObsidianPlugin) {
     super(app, plugin)
   }
@@ -46,7 +44,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
 
     this.addNumericSetting(containerEl, 'Small font size', 'Small font size, in pt for numbers.', 'fontSizeSmall', true)
 
-    this.addNumericSetting(containerEl, 'Padding', 'Padding.', 'padding', true, 10)
+    this.addNumericSetting(containerEl, 'Padding', 'Padding.', 'padding', true)
 
     new Setting(containerEl).setName('Experimental SSSR').setDesc('Use experimental SSSR (default: false)')
     .addToggle((toggle) => toggle.setValue(this.plugin.settings.experimentalSSSR).onChange(async (value) => {
@@ -135,8 +133,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
 
     new Setting(container)
     .setName(name)
-    .setDesc(`${desc} (default: ${defaultValue})`
-    )
+    .setDesc(`${desc} (default: ${defaultValue})`)
     .addText((text) => text
       .setPlaceholder(`default: ${defaultValue}`)
       .setValue(String(this.plugin.settings[key]))
