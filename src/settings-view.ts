@@ -106,13 +106,6 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
       } else this.showNoticePanel(`Invalid code block identifier: '${tempCodeBlockIdentifier}'`)
     }))
 
-    new Setting(containerEl).setName('Reload plugin').setDesc('Redraws all diagrams. Necessary when code block identifier changes.')
-    .addButton(button => button.setTooltip('Reload').setIcon('refresh-ccw').onClick(async () => {
-      await this.app.plugins.disablePlugin(this.plugin.manifest.id)
-      await this.app.plugins.enablePlugin(this.plugin.manifest.id)
-      this.showNoticePanel('Plugin reloaded!')
-    }))
-
     new Setting(containerEl).setName('Reset values').setDesc('Reset everything to default.')
     .addButton((button) => button
     .setButtonText('Reset')
