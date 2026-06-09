@@ -18,7 +18,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
   }
 
   async loadSettings() {
-    let source: Partial<PluginSettings> | null  = (await this.loadData()) as Partial<PluginSettings> | null
+    let source = (await this.loadData()) as Partial<PluginSettings> | null
     const isSourceExists: boolean = !!source
     this.settings = Object.assign({}, DEFAULT_SETTINGS, source)
     if (!isSourceExists) {
@@ -44,7 +44,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
     const svgEl = window.activeDocument.createElementNS('http://www.w3.org/2000/svg', 'svg')
     svgEl.setAttrs({'width': this.settings.width, 'height': this.settings.height})
 
-    container.appendChild(svgEl);
+    container.appendChild(svgEl)
 
     // 4. Initialize the SvgDrawer with styling options
     const svgDrawer = new SmilesDrawer.SvgDrawer(this.settings as Partial<OriginalSmilesDrawerSettings>)

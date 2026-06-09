@@ -9,7 +9,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   codeBlockIdentifier: 'smiles',
   /* Original smiles-drawer settings:  */
   width: 500,
-  height: 500,
+  height: 200, // OG was 500
   bondThickness: 1,
   bondLength: 30,
   shortBondLength: 0.8,

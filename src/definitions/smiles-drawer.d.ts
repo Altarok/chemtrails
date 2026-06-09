@@ -6,7 +6,7 @@ declare module 'smiles-drawer' {
   /*
    * Settings not copied from OG smiles-drawer:
    *
-   * - Show terminal carbons (deprecated; use showCarbons). terminalCarbons: boolean = false
+   * - Show terminal carbons (deprecated, use showCarbons). terminalCarbons: boolean = false
    * - Debug (draw debug information to canvas). debug: boolean = false
    * - Color themes. themes: object = any
    */
@@ -49,10 +49,11 @@ declare module 'smiles-drawer' {
 
   // The parsed molecular graph structure is handled internally by the library.
   // Using 'unknown' forces safety when passing it between parse() and draw().
-  export type MoleculeTree = unknown;
+  export type MoleculeTree = unknown
 
   export class SvgDrawer {
     constructor(options: Partial<OriginalSmilesDrawerSettings>)
+
     draw(
       tree: MoleculeTree,
       target: SVGElement | string,
@@ -61,10 +62,10 @@ declare module 'smiles-drawer' {
     ): void
   }
 
-  // export default SvgDrawer
-
+  /* Not used - YET */
   export class CanvasDrawer {
     constructor(options: Partial<OriginalSmilesDrawerSettings>)
+
     draw(
       tree: MoleculeTree,
       target: HTMLCanvasElement | string,
@@ -84,6 +85,4 @@ declare module 'smiles-drawer' {
     CanvasDrawer: typeof CanvasDrawer
     parse: typeof parse
   }
-
-  // export default SmilesDrawer
 }

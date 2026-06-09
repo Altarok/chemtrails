@@ -1,10 +1,9 @@
-import {App, Modal, Notice, PluginSettingTab, Setting} from 'obsidian'
+import {App, Notice, PluginSettingTab, Setting} from 'obsidian'
 import SmilesDrawerToObsidianPlugin from './main'
-import {AtomVisualizationType, ShowCarbonsType} from "smiles-drawer";
+import {AtomVisualizationType, ShowCarbonsType} from 'smiles-drawer'
 
-const pluginId = 'chemtrails'
-const nonNegativeIntegerPattern = /\d+/
-const nonNegativeNumberPattern = /\d+(\.\d+)?/
+const nonNegativeIntegerPattern = /^\d+$/
+const nonNegativeNumberPattern = /^\d+(\.\d+)?$/
 
 /* See https://docs.obsidian.md/Plugins/User+interface/Settings  */
 export default class SmilesDrawerSettingsTab extends PluginSettingTab {
@@ -135,9 +134,9 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
 
     new Setting(containerEl).setName('Overlap sensitivity ').setDesc('Overlap sensitivity (default: 0.42)')
     .addText((text) => text.setPlaceholder('default: 0.42')
-    .setValue(String(this.plugin.settings.shortBondLength)).onChange(async (value) => {
+    .setValue(String(this.plugin.settings.overlapSensitivity)).onChange(async (value) => {
       if (nonNegativeNumberPattern.test(value)) {
-        this.plugin.settings.shortBondLength = Number(value)
+        this.plugin.settings.overlapSensitivity = Number(value)
         await this.plugin.saveSettings()
       } else this.showNoticePanel(`Invalid value: '${value}'`)
     }))
@@ -145,9 +144,9 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
 
     new Setting(containerEl).setName('Overlap resolution iterations').setDesc('Amount of overlap resolution iterations (default: 1)')
     .addText((text) => text.setPlaceholder('default: 1')
-    .setValue(String(this.plugin.settings.shortBondLength)).onChange(async (value) => {
+    .setValue(String(this.plugin.settings.overlapResolutionIterations)).onChange(async (value) => {
       if (nonNegativeIntegerPattern.test(value)) {
-        this.plugin.settings.shortBondLength = Number(value)
+        this.plugin.settings.overlapResolutionIterations = Number(value)
         await this.plugin.saveSettings()
       } else this.showNoticePanel(`Invalid value: '${value}'`)
     }))
@@ -168,7 +167,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
     containerEl.createEl('hr') ///////////////////////////////////////////
 
     new Setting(containerEl).setName('Code block identifier')
-    .setDesc('String you mark your code blocks with. This requires a plugin reload!')
+    .setDesc('String you mark your code blocks with. HINT: This requires a plugin reload!')
     .addText((text) => text
       .setPlaceholder("default: 'smiles'")
       .setValue(String(this.plugin.settings.codeBlockIdentifier))
@@ -180,15 +179,15 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
         if (isValid) {
           this.plugin.settings.codeBlockIdentifier = tempCodeBlockIdentifier
           await this.plugin.saveSettings()
-          this.showModalPanel('Please reload the plugin now')
+          this.showNoticePanel('Please reload the plugin now')
         } else this.showNoticePanel(`Invalid code block identifier: '${tempCodeBlockIdentifier}'`)
       }
     ))
 
-    new Setting(containerEl).setName('Reload plugin').setDesc('Redraws all diagrams. Necessary after fundamental changes.')
+    new Setting(containerEl).setName('Reload plugin').setDesc('Redraws all diagrams. Necessary when code block identifier changes.')
     .addButton(button => button.setTooltip('Reload').setIcon('refresh-ccw').onClick(async () => {
-        await this.app.plugins.disablePlugin(pluginId)
-        await this.app.plugins.enablePlugin(pluginId)
+        await this.app.plugins.disablePlugin(this.plugin.manifest.id)
+        await this.app.plugins.enablePlugin(this.plugin.manifest.id)
         this.showNoticePanel('Plugin reloaded!')
       }
     ))
@@ -197,13 +196,6 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
 
   private showNoticePanel(input: string) {
     new Notice(input)
-  }
-
-  private showModalPanel(input: string) {
-    const modal = new Modal(this.plugin.app)
-    modal.setTitle('Hint')
-    modal.setContent(input)
-    modal.open()
   }
 
 }

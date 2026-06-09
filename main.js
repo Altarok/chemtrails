@@ -13546,9 +13546,8 @@ var app_default = SmilesDrawerNS;
 
 // src/settings-view.ts
 var import_obsidian = require("obsidian");
-var pluginId = "chemtrails";
-var nonNegativeIntegerPattern = /\d+/;
-var nonNegativeNumberPattern = /\d+(\.\d+)?/;
+var nonNegativeIntegerPattern = /^\d+$/;
+var nonNegativeNumberPattern = /^\d+(\.\d+)?$/;
 var SmilesDrawerSettingsTab = class extends import_obsidian.PluginSettingTab {
   constructor(app, plugin) {
     super(app, plugin);
@@ -13626,15 +13625,15 @@ var SmilesDrawerSettingsTab = class extends import_obsidian.PluginSettingTab {
       this.plugin.settings.explicitHydrogens = value;
       await this.plugin.saveSettings();
     }));
-    new import_obsidian.Setting(containerEl).setName("Overlap sensitivity ").setDesc("Overlap sensitivity (default: 0.42)").addText((text) => text.setPlaceholder("default: 0.42").setValue(String(this.plugin.settings.shortBondLength)).onChange(async (value) => {
+    new import_obsidian.Setting(containerEl).setName("Overlap sensitivity ").setDesc("Overlap sensitivity (default: 0.42)").addText((text) => text.setPlaceholder("default: 0.42").setValue(String(this.plugin.settings.overlapSensitivity)).onChange(async (value) => {
       if (nonNegativeNumberPattern.test(value)) {
-        this.plugin.settings.shortBondLength = Number(value);
+        this.plugin.settings.overlapSensitivity = Number(value);
         await this.plugin.saveSettings();
       } else this.showNoticePanel(`Invalid value: '${value}'`);
     }));
-    new import_obsidian.Setting(containerEl).setName("Overlap resolution iterations").setDesc("Amount of overlap resolution iterations (default: 1)").addText((text) => text.setPlaceholder("default: 1").setValue(String(this.plugin.settings.shortBondLength)).onChange(async (value) => {
+    new import_obsidian.Setting(containerEl).setName("Overlap resolution iterations").setDesc("Amount of overlap resolution iterations (default: 1)").addText((text) => text.setPlaceholder("default: 1").setValue(String(this.plugin.settings.overlapResolutionIterations)).onChange(async (value) => {
       if (nonNegativeIntegerPattern.test(value)) {
-        this.plugin.settings.shortBondLength = Number(value);
+        this.plugin.settings.overlapResolutionIterations = Number(value);
         await this.plugin.saveSettings();
       } else this.showNoticePanel(`Invalid value: '${value}'`);
     }));
@@ -13647,7 +13646,7 @@ var SmilesDrawerSettingsTab = class extends import_obsidian.PluginSettingTab {
       await this.plugin.saveSettings();
     }));
     containerEl.createEl("hr");
-    new import_obsidian.Setting(containerEl).setName("Code block identifier").setDesc("String you mark your code blocks with. This requires a plugin reload!").addText(
+    new import_obsidian.Setting(containerEl).setName("Code block identifier").setDesc("String you mark your code blocks with. HINT: This requires a plugin reload!").addText(
       (text) => text.setPlaceholder("default: 'smiles'").setValue(String(this.plugin.settings.codeBlockIdentifier)).onChange(async (value) => {
         tempCodeBlockIdentifier = value;
       })
@@ -13657,26 +13656,20 @@ var SmilesDrawerSettingsTab = class extends import_obsidian.PluginSettingTab {
         if (isValid) {
           this.plugin.settings.codeBlockIdentifier = tempCodeBlockIdentifier;
           await this.plugin.saveSettings();
-          this.showModalPanel("Please reload the plugin now");
+          this.showNoticePanel("Please reload the plugin now");
         } else this.showNoticePanel(`Invalid code block identifier: '${tempCodeBlockIdentifier}'`);
       }
     ));
-    new import_obsidian.Setting(containerEl).setName("Reload plugin").setDesc("Redraws all diagrams. Necessary after fundamental changes.").addButton((button) => button.setTooltip("Reload").setIcon("refresh-ccw").onClick(
+    new import_obsidian.Setting(containerEl).setName("Reload plugin").setDesc("Redraws all diagrams. Necessary when code block identifier changes.").addButton((button) => button.setTooltip("Reload").setIcon("refresh-ccw").onClick(
       async () => {
-        await this.app.plugins.disablePlugin(pluginId);
-        await this.app.plugins.enablePlugin(pluginId);
+        await this.app.plugins.disablePlugin(this.plugin.manifest.id);
+        await this.app.plugins.enablePlugin(this.plugin.manifest.id);
         this.showNoticePanel("Plugin reloaded!");
       }
     ));
   }
   showNoticePanel(input) {
     new import_obsidian.Notice(input);
-  }
-  showModalPanel(input) {
-    const modal = new import_obsidian.Modal(this.plugin.app);
-    modal.setTitle("Hint");
-    modal.setContent(input);
-    modal.open();
   }
 };
 
@@ -13686,7 +13679,8 @@ var DEFAULT_SETTINGS = {
   codeBlockIdentifier: "smiles",
   /* Original smiles-drawer settings:  */
   width: 500,
-  height: 500,
+  height: 200,
+  // OG was 500
   bondThickness: 1,
   bondLength: 30,
   shortBondLength: 0.8,
