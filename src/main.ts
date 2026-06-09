@@ -22,14 +22,14 @@ export default class SmilesDrawerToObsidian extends Plugin {
     // 3. Set up the target SVG element with responsive attributes
     const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svgEl.setAttribute('width', '600');
-    svgEl.setAttribute('height', '300');
+    svgEl.setAttribute('height', '200');
     container.appendChild(svgEl);
 
     // 4. Initialize the SvgDrawer with styling options
-    // const virtualSize = 500;
+    const virtualSize = 500;
     const svgDrawer = new SmilesDrawer.SvgDrawer({
-      // width: virtualSize,
-      // height: virtualSize,
+      width: virtualSize,
+      height: virtualSize,
       bondThickness: 1,
       fontSizeLarge: 11,
       overlapMax: 1,

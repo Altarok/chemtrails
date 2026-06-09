@@ -34,5 +34,6 @@ CN1C=NC2=C1C(=O)N(C(=O)N2C)C
 0.1.0: Make it work
 
 # Roadmap
-- Add optional parameters in your code blocks to match [the original 'smilesDrawer' options](https://github.com/reymond-group/smilesDrawer/blob/master/README.md#options) parameters.
 - Let you decide how to name your code blocks to prevent multiple plugins searching for `smiles`.
+- Add optional parameters in your code blocks to match [the original 'smilesDrawer' options](https://github.com/reymond-group/smilesDrawer/blob/master/README.md#options) parameters.
+- Add settings for all of those parameters.
