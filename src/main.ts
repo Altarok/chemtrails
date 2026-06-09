@@ -33,7 +33,7 @@ export default class SmilesDrawerToObsidian extends Plugin {
       bondThickness: 1,
       fontSizeLarge: 11,
       overlapMax: 1,
-      showCarbons: 'all',
+      showCarbons: 'acyclic',
       compactDrawing: false
     });
 

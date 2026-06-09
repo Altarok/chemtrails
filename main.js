@@ -13566,7 +13566,7 @@ var SmilesDrawerToObsidian = class extends import_obsidian.Plugin {
       bondThickness: 1,
       fontSizeLarge: 11,
       overlapMax: 1,
-      showCarbons: "all",
+      showCarbons: "acyclic",
       compactDrawing: false
     });
     const isDarkMode = window.activeDocument.body.classList.contains("theme-dark");
