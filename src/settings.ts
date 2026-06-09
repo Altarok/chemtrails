@@ -4,8 +4,6 @@ export interface PluginSettings extends OriginalSmilesDrawerSettings {
   codeBlockIdentifier: string
 }
 
-const defaultBondLength = 30;
-
 export const DEFAULT_SETTINGS: PluginSettings = {
   /* My settings */
   codeBlockIdentifier: 'smiles',
@@ -13,9 +11,9 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   width: 500,
   height: 500,
   bondThickness: 1,
-  bondLength: defaultBondLength,
+  bondLength: 30,
   shortBondLength: 0.8,
-  bondSpacing: 0.17 * defaultBondLength,
+  bondSpacing: 5.1, // OG was 0.17 * 30 (bondLength),
   atomVisualization: 'default',
   fontSizeLarge: 11,
   fontSizeSmall: 3,

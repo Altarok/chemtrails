@@ -13681,7 +13681,6 @@ var SmilesDrawerSettingsTab = class extends import_obsidian.PluginSettingTab {
 };
 
 // src/settings.ts
-var defaultBondLength = 30;
 var DEFAULT_SETTINGS = {
   /* My settings */
   codeBlockIdentifier: "smiles",
@@ -13689,9 +13688,10 @@ var DEFAULT_SETTINGS = {
   width: 500,
   height: 500,
   bondThickness: 1,
-  bondLength: defaultBondLength,
+  bondLength: 30,
   shortBondLength: 0.8,
-  bondSpacing: 0.17 * defaultBondLength,
+  bondSpacing: 5.1,
+  // OG was 0.17 * 30 (bondLength),
   atomVisualization: "default",
   fontSizeLarge: 11,
   fontSizeSmall: 3,
@@ -13723,8 +13723,8 @@ var SmilesDrawerToObsidianPlugin = class extends import_obsidian2.Plugin {
     const isSourceExists = !!source;
     this.settings = Object.assign({}, DEFAULT_SETTINGS, source);
     if (!isSourceExists) {
-      new import_obsidian2.Notice("Chemtrails: Created new data.json");
       await this.saveSettings();
+      new import_obsidian2.Notice("Chemtrails: Created new data.json");
     }
   }
   async saveSettings() {
