@@ -13555,7 +13555,7 @@ var SmilesDrawerToObsidian = class extends import_obsidian.Plugin {
     const smilesString = source.trim();
     if (!smilesString) return;
     const container = el.createDiv({ cls: "obsidian-smiles-container" });
-    const svgEl = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const svgEl = window.activeDocument.createElementNS("http://www.w3.org/2000/svg", "svg");
     svgEl.setAttribute("width", "600");
     svgEl.setAttribute("height", "200");
     container.appendChild(svgEl);
@@ -13569,7 +13569,7 @@ var SmilesDrawerToObsidian = class extends import_obsidian.Plugin {
       showCarbons: "all",
       compactDrawing: false
     });
-    const isDarkMode = document.body.classList.contains("theme-dark");
+    const isDarkMode = window.activeDocument.body.classList.contains("theme-dark");
     const themeMode = isDarkMode ? "dark" : "light";
     app_default.parse(smilesString, (tree) => {
       svgDrawer.draw(tree, svgEl, themeMode);

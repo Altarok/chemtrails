@@ -20,7 +20,7 @@ export default class SmilesDrawerToObsidian extends Plugin {
     const container = el.createDiv({cls: "obsidian-smiles-container"});
 
     // 3. Set up the target SVG element with responsive attributes
-    const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const svgEl = window.activeDocument.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svgEl.setAttribute('width', '600');
     svgEl.setAttribute('height', '200');
     container.appendChild(svgEl);
@@ -38,7 +38,7 @@ export default class SmilesDrawerToObsidian extends Plugin {
     });
 
     // 5. Detect the current Obsidian theme to choose a color palette
-    const isDarkMode = document.body.classList.contains('theme-dark');
+    const isDarkMode = window.activeDocument.body.classList.contains('theme-dark');
     const themeMode = isDarkMode ? 'dark' : 'light';
 
     // 6. Parse and render

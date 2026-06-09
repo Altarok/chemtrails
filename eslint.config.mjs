@@ -14,12 +14,11 @@ export default [
       globals: {
         process: "readonly",
         window: "readonly",
-        document: "readonly",
       },
     },
   },
   {
-    files: ["src/*.ts"],
+    files: ["src/**/*.ts"],
     languageOptions: {
       parser: tsParser,
       sourceType: "module",
@@ -33,10 +32,8 @@ export default [
       "obsidianmd": obsidianmdPlugin,
     },
     rules: {
-      // default settings
       ...js.configs.recommended.rules,
       ...tsPlugin.configs.recommended.rules,
-      // Obsidian settings
       ...obsidianmdPlugin.configs.recommended.rules,
     },
   },
