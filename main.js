@@ -13598,7 +13598,7 @@ var SmilesDrawerSettingsTab = class extends import_obsidian.PluginSettingTab {
     );
     this.addNumericSetting(containerEl, "Large font size", "Large font size, in pt for elements.", "fontSizeLarge", true);
     this.addNumericSetting(containerEl, "Small font size", "Small font size, in pt for numbers.", "fontSizeSmall", true);
-    this.addNumericSetting(containerEl, "Padding", "Padding.", "padding", true, 10);
+    this.addNumericSetting(containerEl, "Padding", "Padding.", "padding", true);
     new import_obsidian.Setting(containerEl).setName("Experimental SSSR").setDesc("Use experimental SSSR (default: false)").addToggle((toggle) => toggle.setValue(this.plugin.settings.experimentalSSSR).onChange(async (value) => {
       this.plugin.settings.experimentalSSSR = value;
       await this.plugin.saveSettings();
@@ -13648,9 +13648,7 @@ var SmilesDrawerSettingsTab = class extends import_obsidian.PluginSettingTab {
   addNumericSetting(container, name, desc, key, isInteger) {
     const pattern = isInteger ? nonNegativeIntegerPattern : nonNegativeNumberPattern;
     const defaultValue = DEFAULT_SETTINGS[key];
-    new import_obsidian.Setting(container).setName(name).setDesc(
-      `${desc} (default: ${defaultValue})`
-    ).addText(
+    new import_obsidian.Setting(container).setName(name).setDesc(`${desc} (default: ${defaultValue})`).addText(
       (text) => text.setPlaceholder(`default: ${defaultValue}`).setValue(String(this.plugin.settings[key])).onChange(async (value) => {
         if (pattern.test(value)) {
           const numValue = Number(value);

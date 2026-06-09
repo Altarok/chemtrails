@@ -21,7 +21,7 @@
     "eslint": "^10.4.0",
     "eslint-plugin-obsidianmd": "latest",
     "globals": "14.0.0",
-    "obsidian": "^1.13.0",
+    "obsidian": "1.12.3",
     "smiles-drawer": "^2.3.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.60.1"
