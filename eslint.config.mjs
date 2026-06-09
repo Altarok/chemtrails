@@ -6,7 +6,7 @@ import js from "@eslint/js";
 export default [
   {
     ignores: [
-      "coverage/**"
+      "main.js"
     ],
   },
   {
@@ -19,7 +19,7 @@ export default [
     },
   },
   {
-    files: ["src/**/*.ts", "src/**/*.tsx"],
+    files: ["src/*.ts"],
     languageOptions: {
       parser: tsParser,
       sourceType: "module",

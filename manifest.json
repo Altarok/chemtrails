@@ -1,9 +1,9 @@
 {
   "id": "chemtrails",
-  "name": "Chem trails",
+  "name": "Chemtrails",
   "version": "0.1.0",
   "minAppVersion": "1.12.7",
-  "description": "Obsidian plugin to draw molecules",
+  "description": "Renders SMILES chemical notations as crisp SVG diagrams.",
   "author": "Altarok",
   "isDesktopOnly": false
 }
