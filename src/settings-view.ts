@@ -6,6 +6,7 @@ const pluginId = 'chemtrails'
 const nonNegativeIntegerPattern = /\d+/
 const nonNegativeNumberPattern = /\d+(\.\d+)?/
 
+/* See https://docs.obsidian.md/Plugins/User+interface/Settings  */
 export default class SmilesDrawerSettingsTab extends PluginSettingTab {
 
 

@@ -18,12 +18,12 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
   }
 
   async loadSettings() {
-    let source = await this.loadData()
+    let source: Partial<PluginSettings> | null  = (await this.loadData()) as Partial<PluginSettings> | null
     const isSourceExists: boolean = !!source
     this.settings = Object.assign({}, DEFAULT_SETTINGS, source)
     if (!isSourceExists) {
-      new Notice('Chemtrails: Created new data.json')
       await this.saveSettings()
+      new Notice('Chemtrails: Created new data.json')
     }
   }
 
