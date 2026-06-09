@@ -1,7 +1,7 @@
 import {App, Notice, PluginSettingTab, Setting} from 'obsidian'
 import SmilesDrawerToObsidianPlugin from './main'
-import {AtomVisualizationType, ShowCarbonsType} from 'smiles-drawer'
-import {DEFAULT_SETTINGS, PluginSettings} from './settings'
+import {AtomVisualizationType, OriginalSmilesDrawerNumericSettings, ShowCarbonsType} from 'smiles-drawer'
+import {DEFAULT_SETTINGS} from './settings'
 
 const nonNegativeIntegerPattern = /^\d+$/
 const nonNegativeNumberPattern = /^\d+(\.\d+)?$/
@@ -126,7 +126,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
 
   }
 
-  private addNumericSetting(container: HTMLElement, name: string, desc: string, key: keyof PluginSettings, isInteger: boolean) {
+  private addNumericSetting(container: HTMLElement, name: string, desc: string, key: keyof OriginalSmilesDrawerNumericSettings, isInteger: boolean) {
     const pattern: RegExp = isInteger ? nonNegativeIntegerPattern : nonNegativeNumberPattern;
 
     const defaultValue: number = DEFAULT_SETTINGS[key] as number
@@ -139,11 +139,11 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
       .setValue(String(this.plugin.settings[key]))
       .onChange(async (value) => {
         if (pattern.test(value)) {
-          const numValue = Number(value);
-          if (typeof this.plugin.settings[key] === 'number') {
-            // Line done with AI to remove 'any' for Obsidian
-            this.plugin.settings[key as keyof typeof this.plugin.settings & string] = numValue as never;
-          }
+          // const numValue = Number(value);
+          // if (typeof this.plugin.settings[key] === 'number') {
+          //   // Line done with AI to remove 'any' for Obsidian
+          this.plugin.settings[key] = Number(value);
+          // }
           await this.plugin.saveSettings();
         } else {
           this.showNoticePanel(`Invalid value for ${name}: '${value}'`);
