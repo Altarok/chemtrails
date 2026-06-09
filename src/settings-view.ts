@@ -1,6 +1,7 @@
 import {App, Notice, PluginSettingTab, Setting} from 'obsidian'
 import SmilesDrawerToObsidianPlugin from './main'
 import {AtomVisualizationType, ShowCarbonsType} from 'smiles-drawer'
+import {DEFAULT_SETTINGS, PluginSettings} from './settings'
 
 const nonNegativeIntegerPattern = /^\d+$/
 const nonNegativeNumberPattern = /^\d+(\.\d+)?$/
@@ -20,52 +21,15 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
 
     containerEl.empty()
 
+    this.addNumericSetting(containerEl, 'Height', 'Height of rendered code block.', 'height', true)
 
-    new Setting(containerEl).setName('Height').setDesc('Drawing height of rendered code block.')
-    .addText((text) => text.setPlaceholder('default: 500')
-    .setValue(String(this.plugin.settings.height)).onChange(async (value) => {
-      if (nonNegativeIntegerPattern.test(value)) {
-        this.plugin.settings.height = Number(value)
-        await this.plugin.saveSettings()
-      } else this.showNoticePanel(`Invalid height: '${value}'`)
-    }))
+    this.addNumericSetting(containerEl, 'Bond thickness', 'Bond thickness.', 'bondThickness', false)
 
-    new Setting(containerEl).setName('Bond thickness').setDesc('Bond thickness.')
-    .addText((text) => text.setPlaceholder('default: 1')
-    .setValue(String(this.plugin.settings.bondThickness)).onChange(async (value) => {
-      if (nonNegativeNumberPattern.test(value)) {
-        this.plugin.settings.bondThickness = Number(value)
-        await this.plugin.saveSettings()
-      } else this.showNoticePanel(`Invalid bond thickness: '${value}'`)
-    }))
+    this.addNumericSetting(containerEl, 'Bond length', 'Bond length between atoms.', 'bondLength', false)
 
-    new Setting(containerEl).setName('Bond length').setDesc('Bond length between atoms.')
-    .addText((text) => text.setPlaceholder('default: 30')
-    .setValue(String(this.plugin.settings.bondLength)).onChange(async (value) => {
-      if (nonNegativeNumberPattern.test(value)) {
-        this.plugin.settings.bondLength = Number(value)
-        await this.plugin.saveSettings()
-      } else this.showNoticePanel(`Invalid bond length: '${value}'`)
-    }))
+    this.addNumericSetting(containerEl, 'Short bond length', 'Short bond length (e.g. double bonds) as a fraction of bond length.', 'shortBondLength', false)
 
-    new Setting(containerEl).setName('Short bond length').setDesc('Short bond length (e.g. double bonds) as a fraction of bond length.')
-    .addText((text) => text.setPlaceholder('default: 0.8')
-    .setValue(String(this.plugin.settings.shortBondLength)).onChange(async (value) => {
-      if (nonNegativeNumberPattern.test(value)) {
-        this.plugin.settings.shortBondLength = Number(value)
-        await this.plugin.saveSettings()
-      } else this.showNoticePanel(`Invalid short bond length: '${value}'`)
-    }))
-
-    new Setting(containerEl).setName('Bond spacing').setDesc('Bond spacing (e.g. space between double bonds).')
-    .addText((text) => text.setPlaceholder('default: 5.1 = 0.17 * default bond length')
-    .setValue(String(this.plugin.settings.bondSpacing)).onChange(async (value) => {
-      if (nonNegativeNumberPattern.test(value)) {
-        this.plugin.settings.bondSpacing = Number(value)
-        await this.plugin.saveSettings()
-      } else this.showNoticePanel(`Invalid bond spacing: '${value}'`)
-    }))
-
+    this.addNumericSetting(containerEl, 'Bond spacing', 'Bond spacing (e.g. space between double bonds).', 'bondSpacing', false)
 
     new Setting(containerEl).setName('Atom Visualization').setDesc('Type of atom visualization. Choose from: characters (default), balls or none')
     .addDropdown((dc) => dc
@@ -78,33 +42,11 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
       })
     )
 
-    new Setting(containerEl).setName('Large font size').setDesc('Large font size, in pt for elements. (default: 11)')
-    .addText((text) => text.setPlaceholder('default: 11')
-    .setValue(String(this.plugin.settings.fontSizeLarge)).onChange(async (value) => {
-      if (nonNegativeIntegerPattern.test(value)) {
-        this.plugin.settings.fontSizeLarge = Number(value)
-        await this.plugin.saveSettings()
-      } else this.showNoticePanel(`Invalid large font size: '${value}'`)
-    }))
+    this.addNumericSetting(containerEl, 'Large font size', 'Large font size, in pt for elements.', 'fontSizeLarge', true)
 
+    this.addNumericSetting(containerEl, 'Small font size', 'Small font size, in pt for numbers.', 'fontSizeSmall', true)
 
-    new Setting(containerEl).setName('Small font size').setDesc('Small font size, in pt for numbers. (default: 3)')
-    .addText((text) => text.setPlaceholder('default: 3')
-    .setValue(String(this.plugin.settings.fontSizeSmall)).onChange(async (value) => {
-      if (nonNegativeIntegerPattern.test(value)) {
-        this.plugin.settings.fontSizeSmall = Number(value)
-        await this.plugin.saveSettings()
-      } else this.showNoticePanel(`Invalid small font size: '${value}'`)
-    }))
-
-    new Setting(containerEl).setName('Padding').setDesc('Padding. (default: 10)')
-    .addText((text) => text.setPlaceholder('default: 10')
-    .setValue(String(this.plugin.settings.padding)).onChange(async (value) => {
-      if (nonNegativeIntegerPattern.test(value)) {
-        this.plugin.settings.padding = Number(value)
-        await this.plugin.saveSettings()
-      } else this.showNoticePanel(`Invalid padding: '${value}'`)
-    }))
+    this.addNumericSetting(containerEl, 'Padding', 'Padding.', 'padding', true, 10)
 
     new Setting(containerEl).setName('Experimental SSSR').setDesc('Use experimental SSSR (default: false)')
     .addToggle((toggle) => toggle.setValue(this.plugin.settings.experimentalSSSR).onChange(async (value) => {
@@ -131,25 +73,9 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
       await this.plugin.saveSettings()
     }))
 
+    this.addNumericSetting(containerEl, 'Overlap sensitivity', 'Overlap sensitivity.', 'overlapSensitivity', false)
 
-    new Setting(containerEl).setName('Overlap sensitivity ').setDesc('Overlap sensitivity (default: 0.42)')
-    .addText((text) => text.setPlaceholder('default: 0.42')
-    .setValue(String(this.plugin.settings.overlapSensitivity)).onChange(async (value) => {
-      if (nonNegativeNumberPattern.test(value)) {
-        this.plugin.settings.overlapSensitivity = Number(value)
-        await this.plugin.saveSettings()
-      } else this.showNoticePanel(`Invalid value: '${value}'`)
-    }))
-
-
-    new Setting(containerEl).setName('Overlap resolution iterations').setDesc('Amount of overlap resolution iterations (default: 1)')
-    .addText((text) => text.setPlaceholder('default: 1')
-    .setValue(String(this.plugin.settings.overlapResolutionIterations)).onChange(async (value) => {
-      if (nonNegativeIntegerPattern.test(value)) {
-        this.plugin.settings.overlapResolutionIterations = Number(value)
-        await this.plugin.saveSettings()
-      } else this.showNoticePanel(`Invalid value: '${value}'`)
-    }))
+    this.addNumericSetting(containerEl, 'Overlap resolution iterations', 'Amount of overlap resolution iterations.', 'overlapResolutionIterations', true)
 
     new Setting(containerEl).setName('Compact drawing').setDesc('Draw concatenated terminals and pseudo elements. (default: true)')
     .addToggle((toggle) => toggle.setValue(this.plugin.settings.compactDrawing).onChange(async (value) => {
@@ -166,32 +92,67 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
 
     containerEl.createEl('hr') ///////////////////////////////////////////
 
-    new Setting(containerEl).setName('Code block identifier')
-    .setDesc('String you mark your code blocks with. HINT: This requires a plugin reload!')
+    new Setting(containerEl).setName('Code block identifier').setDesc('String you mark your code blocks with. HINT: This requires a plugin reload!')
     .addText((text) => text
-      .setPlaceholder("default: 'smiles'")
-      .setValue(String(this.plugin.settings.codeBlockIdentifier))
-      .onChange(async (value) => {
-        tempCodeBlockIdentifier = value
-      })
-    ).addExtraButton(button => button.setTooltip('Save').setIcon('save').onClick(async () => {
-        let isValid: boolean = tempCodeBlockIdentifier?.length > 0
-        if (isValid) {
-          this.plugin.settings.codeBlockIdentifier = tempCodeBlockIdentifier
-          await this.plugin.saveSettings()
-          this.showNoticePanel('Please reload the plugin now')
-        } else this.showNoticePanel(`Invalid code block identifier: '${tempCodeBlockIdentifier}'`)
-      }
-    ))
+    .setPlaceholder("default: 'smiles'")
+    .setValue(String(this.plugin.settings.codeBlockIdentifier))
+    .onChange(async (value) => {
+      tempCodeBlockIdentifier = value
+    }))
+    .addExtraButton(button => button.setTooltip('Save').setIcon('save').onClick(async () => {
+      let isValid: boolean = tempCodeBlockIdentifier?.length > 0
+      if (isValid) {
+        this.plugin.settings.codeBlockIdentifier = tempCodeBlockIdentifier
+        await this.plugin.saveSettings()
+        this.showNoticePanel('Please reload the plugin now')
+      } else this.showNoticePanel(`Invalid code block identifier: '${tempCodeBlockIdentifier}'`)
+    }))
 
     new Setting(containerEl).setName('Reload plugin').setDesc('Redraws all diagrams. Necessary when code block identifier changes.')
     .addButton(button => button.setTooltip('Reload').setIcon('refresh-ccw').onClick(async () => {
-        await this.app.plugins.disablePlugin(this.plugin.manifest.id)
-        await this.app.plugins.enablePlugin(this.plugin.manifest.id)
-        this.showNoticePanel('Plugin reloaded!')
-      }
-    ))
+      await this.app.plugins.disablePlugin(this.plugin.manifest.id)
+      await this.app.plugins.enablePlugin(this.plugin.manifest.id)
+      this.showNoticePanel('Plugin reloaded!')
+    }))
 
+    new Setting(containerEl).setName('Reset values').setDesc('Reset everything to default.')
+    .addButton((button) => button
+    .setButtonText('Reset')
+    .setWarning() /* red color TODO #v1.13.0 change to .setDestructive() */
+    .onClick(async () => {
+      /* JS Hint: be aware that we can't just overwrite one with the other */
+      this.plugin.settings = Object.assign({}, DEFAULT_SETTINGS);
+      await this.plugin.saveSettings()
+      this.display()
+    }))
+
+  }
+
+  private addNumericSetting(container: HTMLElement, name: string, desc: string, key: keyof PluginSettings, isInteger: boolean) {
+    const pattern: RegExp = isInteger ? nonNegativeIntegerPattern : nonNegativeNumberPattern;
+
+    const defaultValue: number = DEFAULT_SETTINGS[key] as number
+
+    new Setting(container)
+    .setName(name)
+    .setDesc(`${desc} (default: ${defaultValue})`
+    )
+    .addText((text) => text
+      .setPlaceholder(`default: ${defaultValue}`)
+      .setValue(String(this.plugin.settings[key]))
+      .onChange(async (value) => {
+        if (pattern.test(value)) {
+          const numValue = Number(value);
+          if (typeof this.plugin.settings[key] === 'number') {
+            // Line done with AI to remove 'any' for Obsidian
+            this.plugin.settings[key as keyof typeof this.plugin.settings & string] = numValue as never;
+          }
+          await this.plugin.saveSettings();
+        } else {
+          this.showNoticePanel(`Invalid value for ${name}: '${value}'`);
+        }
+      })
+    );
   }
 
   private showNoticePanel(input: string) {

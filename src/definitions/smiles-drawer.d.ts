@@ -49,9 +49,9 @@ declare module 'smiles-drawer' {
 
   // The parsed molecular graph structure is handled internally by the library.
   // Using 'unknown' forces safety when passing it between parse() and draw().
-  export type MoleculeTree = unknown
+  type MoleculeTree = unknown
 
-  export class SvgDrawer {
+  class SvgDrawer {
     constructor(options: Partial<OriginalSmilesDrawerSettings>)
 
     draw(
@@ -63,7 +63,7 @@ declare module 'smiles-drawer' {
   }
 
   /* Not used - YET */
-  export class CanvasDrawer {
+  class CanvasDrawer {
     constructor(options: Partial<OriginalSmilesDrawerSettings>)
 
     draw(
@@ -74,15 +74,11 @@ declare module 'smiles-drawer' {
     ): void
   }
 
-  export function parse(
+  function parse(
     smiles: string,
     successCallback: (tree: MoleculeTree) => void,
     errorCallback?: (error: Error) => void
   ): void
 
-  export const SmilesDrawer: {
-    SvgDrawer: typeof SvgDrawer
-    CanvasDrawer: typeof CanvasDrawer
-    parse: typeof parse
-  }
+  export {SvgDrawer, CanvasDrawer, parse}
 }

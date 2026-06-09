@@ -1,5 +1,5 @@
 import {Notice, Plugin} from 'obsidian'
-import SmilesDrawer, {OriginalSmilesDrawerSettings} from 'smiles-drawer'
+import SmilesDrawer from 'smiles-drawer'
 import SmilesDrawerSettingsTab from './settings-view'
 import {DEFAULT_SETTINGS, PluginSettings} from './settings'
 
@@ -32,28 +32,28 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
   }
 
   private registerSmiles(source: string, el: HTMLElement) {
-    // 1. Clean the incoming SMILES string from the Markdown file
+    // Clean the incoming SMILES string from the Markdown file
     const smilesString = source.trim()
 
     if (!smilesString) return
 
-    // 2. Create a clean container element for the SVG inside the note DOM
+    // Create a clean container element for the SVG inside the note DOM
     const container = el.createDiv({cls: 'obsidian-smiles-container'})
 
-    // 3. Set up the target SVG element with responsive attributes
+    // Set up the target SVG element with responsive attributes
     const svgEl = window.activeDocument.createElementNS('http://www.w3.org/2000/svg', 'svg')
     svgEl.setAttrs({'width': this.settings.width, 'height': this.settings.height})
 
     container.appendChild(svgEl)
 
-    // 4. Initialize the SvgDrawer with styling options
-    const svgDrawer = new SmilesDrawer.SvgDrawer(this.settings as Partial<OriginalSmilesDrawerSettings>)
+    // Initialize the SvgDrawer with styling options
+    const svgDrawer = new SmilesDrawer.SvgDrawer(this.settings)
 
-    // 5. Detect the current Obsidian theme to choose a color palette
+    // Detect the current Obsidian theme to choose a color palette
     const isDarkMode: boolean = window.activeDocument.body.classList.contains('theme-dark')
     const themeMode = isDarkMode ? 'dark' : 'light'
 
-    // 6. Parse and render
+    // Parse and render
     SmilesDrawer.parse(smilesString, (tree): void => {
       svgDrawer.draw(tree, svgEl, themeMode)
     }, (error) => {

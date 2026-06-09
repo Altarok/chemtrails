@@ -13546,132 +13546,6 @@ var app_default = SmilesDrawerNS;
 
 // src/settings-view.ts
 var import_obsidian = require("obsidian");
-var nonNegativeIntegerPattern = /^\d+$/;
-var nonNegativeNumberPattern = /^\d+(\.\d+)?$/;
-var SmilesDrawerSettingsTab = class extends import_obsidian.PluginSettingTab {
-  constructor(app, plugin) {
-    super(app, plugin);
-    this.plugin = plugin;
-  }
-  display() {
-    let { containerEl } = this;
-    let tempCodeBlockIdentifier = this.plugin.settings.codeBlockIdentifier;
-    containerEl.empty();
-    new import_obsidian.Setting(containerEl).setName("Height").setDesc("Drawing height of rendered code block.").addText((text) => text.setPlaceholder("default: 500").setValue(String(this.plugin.settings.height)).onChange(async (value) => {
-      if (nonNegativeIntegerPattern.test(value)) {
-        this.plugin.settings.height = Number(value);
-        await this.plugin.saveSettings();
-      } else this.showNoticePanel(`Invalid height: '${value}'`);
-    }));
-    new import_obsidian.Setting(containerEl).setName("Bond thickness").setDesc("Bond thickness.").addText((text) => text.setPlaceholder("default: 1").setValue(String(this.plugin.settings.bondThickness)).onChange(async (value) => {
-      if (nonNegativeNumberPattern.test(value)) {
-        this.plugin.settings.bondThickness = Number(value);
-        await this.plugin.saveSettings();
-      } else this.showNoticePanel(`Invalid bond thickness: '${value}'`);
-    }));
-    new import_obsidian.Setting(containerEl).setName("Bond length").setDesc("Bond length between atoms.").addText((text) => text.setPlaceholder("default: 30").setValue(String(this.plugin.settings.bondLength)).onChange(async (value) => {
-      if (nonNegativeNumberPattern.test(value)) {
-        this.plugin.settings.bondLength = Number(value);
-        await this.plugin.saveSettings();
-      } else this.showNoticePanel(`Invalid bond length: '${value}'`);
-    }));
-    new import_obsidian.Setting(containerEl).setName("Short bond length").setDesc("Short bond length (e.g. double bonds) as a fraction of bond length.").addText((text) => text.setPlaceholder("default: 0.8").setValue(String(this.plugin.settings.shortBondLength)).onChange(async (value) => {
-      if (nonNegativeNumberPattern.test(value)) {
-        this.plugin.settings.shortBondLength = Number(value);
-        await this.plugin.saveSettings();
-      } else this.showNoticePanel(`Invalid short bond length: '${value}'`);
-    }));
-    new import_obsidian.Setting(containerEl).setName("Bond spacing").setDesc("Bond spacing (e.g. space between double bonds).").addText((text) => text.setPlaceholder("default: 5.1 = 0.17 * default bond length").setValue(String(this.plugin.settings.bondSpacing)).onChange(async (value) => {
-      if (nonNegativeNumberPattern.test(value)) {
-        this.plugin.settings.bondSpacing = Number(value);
-        await this.plugin.saveSettings();
-      } else this.showNoticePanel(`Invalid bond spacing: '${value}'`);
-    }));
-    new import_obsidian.Setting(containerEl).setName("Atom Visualization").setDesc("Type of atom visualization. Choose from: characters (default), balls or none").addDropdown(
-      (dc) => dc.addOption("default", "characters (default)").addOption("balls", "balls").addOption("none", "none").setValue(this.plugin.settings.atomVisualization).onChange(async (value) => {
-        this.plugin.settings.atomVisualization = value;
-        await this.plugin.saveSettings();
-      })
-    );
-    new import_obsidian.Setting(containerEl).setName("Large font size").setDesc("Large font size, in pt for elements. (default: 11)").addText((text) => text.setPlaceholder("default: 11").setValue(String(this.plugin.settings.fontSizeLarge)).onChange(async (value) => {
-      if (nonNegativeIntegerPattern.test(value)) {
-        this.plugin.settings.fontSizeLarge = Number(value);
-        await this.plugin.saveSettings();
-      } else this.showNoticePanel(`Invalid large font size: '${value}'`);
-    }));
-    new import_obsidian.Setting(containerEl).setName("Small font size").setDesc("Small font size, in pt for numbers. (default: 3)").addText((text) => text.setPlaceholder("default: 3").setValue(String(this.plugin.settings.fontSizeSmall)).onChange(async (value) => {
-      if (nonNegativeIntegerPattern.test(value)) {
-        this.plugin.settings.fontSizeSmall = Number(value);
-        await this.plugin.saveSettings();
-      } else this.showNoticePanel(`Invalid small font size: '${value}'`);
-    }));
-    new import_obsidian.Setting(containerEl).setName("Padding").setDesc("Padding. (default: 10)").addText((text) => text.setPlaceholder("default: 10").setValue(String(this.plugin.settings.padding)).onChange(async (value) => {
-      if (nonNegativeIntegerPattern.test(value)) {
-        this.plugin.settings.padding = Number(value);
-        await this.plugin.saveSettings();
-      } else this.showNoticePanel(`Invalid padding: '${value}'`);
-    }));
-    new import_obsidian.Setting(containerEl).setName("Experimental SSSR").setDesc("Use experimental SSSR (default: false)").addToggle((toggle) => toggle.setValue(this.plugin.settings.experimentalSSSR).onChange(async (value) => {
-      this.plugin.settings.experimentalSSSR = value;
-      await this.plugin.saveSettings();
-    }));
-    new import_obsidian.Setting(containerEl).setName("Show explicit carbons").setDesc("Show explicit carbon atoms. Choose from: none, auto (default), terminal, acyclic, all").addDropdown(
-      (dc) => dc.addOption("none", "none").addOption("default", "auto (default)").addOption("terminal", "terminal").addOption("acyclic", "acyclic").addOption("all", "all").setValue(this.plugin.settings.showCarbons).onChange(async (value) => {
-        this.plugin.settings.showCarbons = value;
-        await this.plugin.saveSettings();
-      })
-    );
-    new import_obsidian.Setting(containerEl).setName("Show hydrogen atoms").setDesc("Show explicit hydrogen atoms (default: true)").addToggle((toggle) => toggle.setValue(this.plugin.settings.explicitHydrogens).onChange(async (value) => {
-      this.plugin.settings.explicitHydrogens = value;
-      await this.plugin.saveSettings();
-    }));
-    new import_obsidian.Setting(containerEl).setName("Overlap sensitivity ").setDesc("Overlap sensitivity (default: 0.42)").addText((text) => text.setPlaceholder("default: 0.42").setValue(String(this.plugin.settings.overlapSensitivity)).onChange(async (value) => {
-      if (nonNegativeNumberPattern.test(value)) {
-        this.plugin.settings.overlapSensitivity = Number(value);
-        await this.plugin.saveSettings();
-      } else this.showNoticePanel(`Invalid value: '${value}'`);
-    }));
-    new import_obsidian.Setting(containerEl).setName("Overlap resolution iterations").setDesc("Amount of overlap resolution iterations (default: 1)").addText((text) => text.setPlaceholder("default: 1").setValue(String(this.plugin.settings.overlapResolutionIterations)).onChange(async (value) => {
-      if (nonNegativeIntegerPattern.test(value)) {
-        this.plugin.settings.overlapResolutionIterations = Number(value);
-        await this.plugin.saveSettings();
-      } else this.showNoticePanel(`Invalid value: '${value}'`);
-    }));
-    new import_obsidian.Setting(containerEl).setName("Compact drawing").setDesc("Draw concatenated terminals and pseudo elements. (default: true)").addToggle((toggle) => toggle.setValue(this.plugin.settings.compactDrawing).onChange(async (value) => {
-      this.plugin.settings.compactDrawing = value;
-      await this.plugin.saveSettings();
-    }));
-    new import_obsidian.Setting(containerEl).setName("Isometric").setDesc("Draw isometric SMILES if available (default: true)").addToggle((toggle) => toggle.setValue(this.plugin.settings.isometric).onChange(async (value) => {
-      this.plugin.settings.isometric = value;
-      await this.plugin.saveSettings();
-    }));
-    containerEl.createEl("hr");
-    new import_obsidian.Setting(containerEl).setName("Code block identifier").setDesc("String you mark your code blocks with. HINT: This requires a plugin reload!").addText(
-      (text) => text.setPlaceholder("default: 'smiles'").setValue(String(this.plugin.settings.codeBlockIdentifier)).onChange(async (value) => {
-        tempCodeBlockIdentifier = value;
-      })
-    ).addExtraButton((button) => button.setTooltip("Save").setIcon("save").onClick(
-      async () => {
-        let isValid = (tempCodeBlockIdentifier == null ? void 0 : tempCodeBlockIdentifier.length) > 0;
-        if (isValid) {
-          this.plugin.settings.codeBlockIdentifier = tempCodeBlockIdentifier;
-          await this.plugin.saveSettings();
-          this.showNoticePanel("Please reload the plugin now");
-        } else this.showNoticePanel(`Invalid code block identifier: '${tempCodeBlockIdentifier}'`);
-      }
-    ));
-    new import_obsidian.Setting(containerEl).setName("Reload plugin").setDesc("Redraws all diagrams. Necessary when code block identifier changes.").addButton((button) => button.setTooltip("Reload").setIcon("refresh-ccw").onClick(
-      async () => {
-        await this.app.plugins.disablePlugin(this.plugin.manifest.id);
-        await this.app.plugins.enablePlugin(this.plugin.manifest.id);
-        this.showNoticePanel("Plugin reloaded!");
-      }
-    ));
-  }
-  showNoticePanel(input) {
-    new import_obsidian.Notice(input);
-  }
-};
 
 // src/settings.ts
 var DEFAULT_SETTINGS = {
@@ -13679,7 +13553,7 @@ var DEFAULT_SETTINGS = {
   codeBlockIdentifier: "smiles",
   /* Original smiles-drawer settings:  */
   width: 500,
-  height: 200,
+  height: 150,
   // OG was 500
   bondThickness: 1,
   bondLength: 30,
@@ -13697,6 +13571,102 @@ var DEFAULT_SETTINGS = {
   overlapResolutionIterations: 1,
   compactDrawing: true,
   isometric: true
+};
+
+// src/settings-view.ts
+var nonNegativeIntegerPattern = /^\d+$/;
+var nonNegativeNumberPattern = /^\d+(\.\d+)?$/;
+var SmilesDrawerSettingsTab = class extends import_obsidian.PluginSettingTab {
+  constructor(app, plugin) {
+    super(app, plugin);
+    this.plugin = plugin;
+  }
+  display() {
+    let { containerEl } = this;
+    let tempCodeBlockIdentifier = this.plugin.settings.codeBlockIdentifier;
+    containerEl.empty();
+    this.addNumericSetting(containerEl, "Height", "Height of rendered code block.", "height", true);
+    this.addNumericSetting(containerEl, "Bond thickness", "Bond thickness.", "bondThickness", false);
+    this.addNumericSetting(containerEl, "Bond length", "Bond length between atoms.", "bondLength", false);
+    this.addNumericSetting(containerEl, "Short bond length", "Short bond length (e.g. double bonds) as a fraction of bond length.", "shortBondLength", false);
+    this.addNumericSetting(containerEl, "Bond spacing", "Bond spacing (e.g. space between double bonds).", "bondSpacing", false);
+    new import_obsidian.Setting(containerEl).setName("Atom Visualization").setDesc("Type of atom visualization. Choose from: characters (default), balls or none").addDropdown(
+      (dc) => dc.addOption("default", "characters (default)").addOption("balls", "balls").addOption("none", "none").setValue(this.plugin.settings.atomVisualization).onChange(async (value) => {
+        this.plugin.settings.atomVisualization = value;
+        await this.plugin.saveSettings();
+      })
+    );
+    this.addNumericSetting(containerEl, "Large font size", "Large font size, in pt for elements.", "fontSizeLarge", true);
+    this.addNumericSetting(containerEl, "Small font size", "Small font size, in pt for numbers.", "fontSizeSmall", true);
+    this.addNumericSetting(containerEl, "Padding", "Padding.", "padding", true, 10);
+    new import_obsidian.Setting(containerEl).setName("Experimental SSSR").setDesc("Use experimental SSSR (default: false)").addToggle((toggle) => toggle.setValue(this.plugin.settings.experimentalSSSR).onChange(async (value) => {
+      this.plugin.settings.experimentalSSSR = value;
+      await this.plugin.saveSettings();
+    }));
+    new import_obsidian.Setting(containerEl).setName("Show explicit carbons").setDesc("Show explicit carbon atoms. Choose from: none, auto (default), terminal, acyclic, all").addDropdown(
+      (dc) => dc.addOption("none", "none").addOption("default", "auto (default)").addOption("terminal", "terminal").addOption("acyclic", "acyclic").addOption("all", "all").setValue(this.plugin.settings.showCarbons).onChange(async (value) => {
+        this.plugin.settings.showCarbons = value;
+        await this.plugin.saveSettings();
+      })
+    );
+    new import_obsidian.Setting(containerEl).setName("Show hydrogen atoms").setDesc("Show explicit hydrogen atoms (default: true)").addToggle((toggle) => toggle.setValue(this.plugin.settings.explicitHydrogens).onChange(async (value) => {
+      this.plugin.settings.explicitHydrogens = value;
+      await this.plugin.saveSettings();
+    }));
+    this.addNumericSetting(containerEl, "Overlap sensitivity", "Overlap sensitivity.", "overlapSensitivity", false);
+    this.addNumericSetting(containerEl, "Overlap resolution iterations", "Amount of overlap resolution iterations.", "overlapResolutionIterations", true);
+    new import_obsidian.Setting(containerEl).setName("Compact drawing").setDesc("Draw concatenated terminals and pseudo elements. (default: true)").addToggle((toggle) => toggle.setValue(this.plugin.settings.compactDrawing).onChange(async (value) => {
+      this.plugin.settings.compactDrawing = value;
+      await this.plugin.saveSettings();
+    }));
+    new import_obsidian.Setting(containerEl).setName("Isometric").setDesc("Draw isometric SMILES if available (default: true)").addToggle((toggle) => toggle.setValue(this.plugin.settings.isometric).onChange(async (value) => {
+      this.plugin.settings.isometric = value;
+      await this.plugin.saveSettings();
+    }));
+    containerEl.createEl("hr");
+    new import_obsidian.Setting(containerEl).setName("Code block identifier").setDesc("String you mark your code blocks with. HINT: This requires a plugin reload!").addText((text) => text.setPlaceholder("default: 'smiles'").setValue(String(this.plugin.settings.codeBlockIdentifier)).onChange(async (value) => {
+      tempCodeBlockIdentifier = value;
+    })).addExtraButton((button) => button.setTooltip("Save").setIcon("save").onClick(async () => {
+      let isValid = (tempCodeBlockIdentifier == null ? void 0 : tempCodeBlockIdentifier.length) > 0;
+      if (isValid) {
+        this.plugin.settings.codeBlockIdentifier = tempCodeBlockIdentifier;
+        await this.plugin.saveSettings();
+        this.showNoticePanel("Please reload the plugin now");
+      } else this.showNoticePanel(`Invalid code block identifier: '${tempCodeBlockIdentifier}'`);
+    }));
+    new import_obsidian.Setting(containerEl).setName("Reload plugin").setDesc("Redraws all diagrams. Necessary when code block identifier changes.").addButton((button) => button.setTooltip("Reload").setIcon("refresh-ccw").onClick(async () => {
+      await this.app.plugins.disablePlugin(this.plugin.manifest.id);
+      await this.app.plugins.enablePlugin(this.plugin.manifest.id);
+      this.showNoticePanel("Plugin reloaded!");
+    }));
+    new import_obsidian.Setting(containerEl).setName("Reset values").setDesc("Reset everything to default.").addButton((button) => button.setButtonText("Reset").setWarning().onClick(async () => {
+      this.plugin.settings = Object.assign({}, DEFAULT_SETTINGS);
+      await this.plugin.saveSettings();
+      this.display();
+    }));
+  }
+  addNumericSetting(container, name, desc, key, isInteger) {
+    const pattern = isInteger ? nonNegativeIntegerPattern : nonNegativeNumberPattern;
+    const defaultValue = DEFAULT_SETTINGS[key];
+    new import_obsidian.Setting(container).setName(name).setDesc(
+      `${desc} (default: ${defaultValue})`
+    ).addText(
+      (text) => text.setPlaceholder(`default: ${defaultValue}`).setValue(String(this.plugin.settings[key])).onChange(async (value) => {
+        if (pattern.test(value)) {
+          const numValue = Number(value);
+          if (typeof this.plugin.settings[key] === "number") {
+            this.plugin.settings[key] = numValue;
+          }
+          await this.plugin.saveSettings();
+        } else {
+          this.showNoticePanel(`Invalid value for ${name}: '${value}'`);
+        }
+      })
+    );
+  }
+  showNoticePanel(input) {
+    new import_obsidian.Notice(input);
+  }
 };
 
 // src/main.ts
