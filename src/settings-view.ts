@@ -132,11 +132,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
       .setValue(String(this.plugin.settings[key]))
       .onChange(async (value) => {
         if (pattern.test(value)) {
-          // const numValue = Number(value);
-          // if (typeof this.plugin.settings[key] === 'number') {
-          //   // Line done with AI to remove 'any' for Obsidian
           this.plugin.settings[key] = Number(value);
-          // }
           await this.plugin.saveSettings();
         } else {
           this.showNoticePanel(`Invalid value for ${name}: '${value}'`);
