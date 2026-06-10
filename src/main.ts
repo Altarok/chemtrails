@@ -180,7 +180,11 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
 
                 img.src = url;
               } catch (err) {
-                new Notice(`Copy failed: ${err.message}`);
+                if (err instanceof Error) {
+                  new Notice(`Copy failed: ${err.message}`);
+                } else {
+                  new Notice('Copy failed due to an unknown error.');
+                }
               }
             });
         }
