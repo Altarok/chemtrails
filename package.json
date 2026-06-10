@@ -16,11 +16,13 @@
     "lint": "eslint ."
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^24.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.61.0",
+    "@typescript-eslint/parser": "^8.61.0",
     "esbuild": "^0.28.0",
     "eslint": "^10.4.0",
     "eslint-plugin-obsidianmd": "latest",
-    "globals": "14.0.0",
     "obsidian": "1.12.3",
     "smiles-drawer": "^2.3.0",
     "typescript": "^5.8.3",

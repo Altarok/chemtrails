@@ -1,7 +1,8 @@
-import {App, Notice, PluginSettingTab, Setting} from 'obsidian'
+import {App, PluginSettingTab, Setting} from 'obsidian'
 import SmilesDrawerToObsidianPlugin from './main'
 import {AtomVisualizationType, OriginalSmilesDrawerNumericSettings, ShowCarbonsType} from 'smiles-drawer'
 import {DEFAULT_SETTINGS} from './settings'
+import {Popup} from './popup-util'
 
 const nonNegativeIntegerPattern = /^\d+$/
 const nonNegativeNumberPattern = /^\d+(\.\d+)?$/
@@ -102,8 +103,8 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
       if (isValid) {
         this.plugin.settings.codeBlockIdentifier = tempCodeBlockIdentifier
         await this.plugin.saveSettings()
-        this.showNoticePanel('Please reload the plugin now')
-      } else this.showNoticePanel(`Invalid code block identifier: '${tempCodeBlockIdentifier}'`)
+        Popup.ok('Please reload the plugin now')
+      } else Popup.warn(`Invalid code block identifier: '${tempCodeBlockIdentifier}'`)
     }))
 
     new Setting(containerEl).setName('Reset values').setDesc('Reset everything to default.')
@@ -135,14 +136,10 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
           this.plugin.settings[key] = Number(value)
           await this.plugin.saveSettings()
         } else {
-          this.showNoticePanel(`Invalid value for ${name}: '${value}'`)
+          Popup.warn(`Invalid value for ${name}: '${value}'`)
         }
       })
     )
-  }
-
-  private showNoticePanel(input: string) {
-    new Notice(input)
   }
 
 }

@@ -1,7 +1,8 @@
-import {MarkdownView, Menu, Notice, Plugin} from 'obsidian'
+import {MarkdownView, Menu, Plugin} from 'obsidian'
 import SmilesDrawer from 'smiles-drawer'
 import SmilesDrawerSettingsTab from './settings-view'
 import {DEFAULT_SETTINGS, PluginSettings} from './settings'
+import {Popup} from './popup-util'
 
 export default class SmilesDrawerToObsidianPlugin extends Plugin {
   settings: PluginSettings = DEFAULT_SETTINGS
@@ -23,7 +24,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
     this.settings = Object.assign({}, DEFAULT_SETTINGS, source)
     if (!isSourceExists) {
       await this.saveSettings()
-      new Notice('Chemtrails: Created new data.json')
+      Popup.ok('Chemtrails: Created new data.json')
     }
   }
 
@@ -144,55 +145,59 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
       )
 
       // OPTION 2: Copy SVG as Image
-      menu.addItem((item) => {
-          return item
-            .setTitle('Copy as image (png)')
-            .setIcon('lucide-copy')
-            .onClick(async () => {
-              try {
-                // 1. Get the raw XML string from your actual generated SVG element
-                const svgData = new XMLSerializer().serializeToString(svgEl)
+      menu.addItem((item) =>
+        item
+        .setTitle('Copy as image (png)')
+        .setIcon('lucide-copy')
+        .onClick(async () => {
+          try {
+            // 1. Get the raw XML string from your actual generated SVG element
+            const svgData = new XMLSerializer().serializeToString(svgEl)
 
-                // 2. Create a hidden canvas element wrapper to convert vector to pixel raster data
-                const canvas = window.activeDocument.createElement('canvas')
-                const ctx = canvas.getContext('2d')
-                if (!ctx) return
+            // 2. Create a hidden canvas element wrapper to convert vector to pixel raster data
+            const canvas = window.activeDocument.createElement('canvas')
+            const ctx = canvas.getContext('2d')
+            if (!ctx) return
 
-                // Standard boundaries based on your active dimensions
-                canvas.width = localSettings.width
-                canvas.height = localSettings.height
+            // Standard boundaries based on your active dimensions
+            canvas.width = localSettings.width
+            canvas.height = localSettings.height
 
-                // 3. Set up a modern blob image conversion pipeline
-                const img = new window.Image()
-                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'})
-                const url = URL.createObjectURL(svgBlob)
+            // 3. Set up a modern blob image conversion pipeline
+            const img = new window.Image()
+            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'})
+            const url = URL.createObjectURL(svgBlob)
 
-                img.onload = async () => {
-                  ctx.drawImage(img, 0, 0)
-                  URL.revokeObjectURL(url)
+            img.onload = () => {
+              ctx.drawImage(img, 0, 0)
+              URL.revokeObjectURL(url)
 
-                  // 4. Extract standard PNG image blob from canvas cache data
-                  canvas.toBlob(async (pngBlob) => {
-                    if (!pngBlob) return
+              // 4. Extract standard PNG image blob from canvas cache data without a leaking promise
+              canvas.toBlob((pngBlob) => {
+                if (!pngBlob) return
 
+                // Isolate the async operation to keep the toBlob callback synchronous
+                (async () => {
+                  try {
                     // 5. Write binary object array data payload into system clipboard space
                     await window.navigator.clipboard.write([
                       new ClipboardItem({'image/png': pngBlob})
                     ])
-                    new Notice('Image copied to clipboard!')
-                  }, 'image/png')
-                }
+                    Popup.ok('Image copied to clipboard.')
+                  } catch (err) {
+                    if (err instanceof Error) {
+                      Popup.nok('Clipboard write failed', err)
+                    }
+                  }
+                })()
+              }, 'image/png')
+            }
 
-                img.src = url
-              } catch (err) {
-                if (err instanceof Error) {
-                  new Notice(`Copy failed: ${err.message}`)
-                } else {
-                  new Notice('Copy failed due to an unknown error.')
-                }
-              }
-            })
-        }
+            img.src = url
+          } catch (err) {
+            Popup.nok('Copy failed', err)
+          }
+        })
       )
 
       // Display the menu panel exactly where the user clicked their mouse

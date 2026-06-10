@@ -42,7 +42,7 @@ declare module 'smiles-drawer' {
     experimentalSSSR: boolean
     /* Show explicit carbons (default: 'default') */
     showCarbons: ShowCarbonsType
-    /* Show explicit hydrogens (default: true) */
+    /* Show explicit hydrogen atoms (default: true) */
     explicitHydrogens: boolean
     /* Draw concatenated terminals and pseudo elements (default: true) */
     compactDrawing: boolean

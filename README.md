@@ -1,7 +1,7 @@
 # Chemtrails
 Chemtrails is a lightweight, zero-overhead Obsidian plugin that renders SMILES (Simplified Molecular Input Line Entry System) chemical notations into crisp, responsive vector SVG diagrams natively within your notes.
 
-The plugin acts as a bridge from ['smilesDrawer' of the reymond-group](https://github.com/reymond-group/smilesDrawer) to Obsidian.
+The plugin acts as a bridge from [smilesDrawer of the reymond-group](https://github.com/reymond-group/smilesDrawer) to Obsidian.
 
 Please read their original paper published by the Journal of Chemical Information and Modeling:
 [10.1021/acs.jcim.7b00425](https://pubs.acs.org/doi/10.1021/acs.jcim.7b00425)
@@ -32,6 +32,6 @@ CN1C=NC2=C1C(=O)N(C(=O)N2C)C
 
 # Changelog / Roadmap
 - 0.1.0: Make it work
-- 0.2.0: Add settings, including renaming of Markdown code block identifier and most of [the original 'smilesDrawer' options](https://github.com/reymond-group/smilesDrawer/blob/master/README.md#options) parameters.
+- 0.2.0: Add settings, including renaming of Markdown code block identifier and most of [the original smilesDrawer options](https://github.com/reymond-group/smilesDrawer/blob/master/README.md#options) parameters.
 - 0.3.0: Add option to copy SVG as PNG
 - 
