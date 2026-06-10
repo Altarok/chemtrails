@@ -59,19 +59,19 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
 
       // 2. Verify the key actually exists on your settings object
       if (rawKey in localSettings) {
-        const key = rawKey as keyof PluginSettings
-        const currentTargetType = typeof localSettings[key]
+        // const key = rawKey as keyof PluginSettings
+        const currentTargetType = typeof settingsRef[rawKey]
 
         // 3. Parse and cast the string into the correct runtime data type dynamically
         if (currentTargetType === 'number') {
           const num = Number(rawValue)
           if (!isNaN(num)) {
-            settingsRef[key] = num
+            settingsRef[rawKey] = num
           }
         } else if (currentTargetType === 'boolean') {
-          settingsRef[key] = rawValue === 'true'
+          settingsRef[rawKey] = rawValue === 'true'
         } else if (currentTargetType === 'string') {
-          settingsRef[key] = rawValue
+          settingsRef[rawKey] = rawValue
         }
       }
     }
@@ -106,7 +106,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
   private addRightClickMenu(container: HTMLDivElement, smilesString: string, svgEl: SVGSVGElement, localSettings: PluginSettings) {
     // Inside your registerSmiles method:
     container.addEventListener('contextmenu', (event: MouseEvent) => {
-      event.preventDefault() // TODO prevent standard browser right-click menu ?
+      event.preventDefault() // prevents standard browser right-click menu TODO remove?
 
       const menu = new Menu()
 
@@ -115,7 +115,6 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
         .setTitle('Edit layout height')
         .setIcon('lucide-pencil')
         .onClick(async () => {
-          // Fetch the current active Markdown editor instance workspace view
           const activeView = this.app.workspace.getActiveViewOfType(MarkdownView)
           if (!activeView) return
 
@@ -175,22 +174,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
               // 4. Extract standard PNG image blob from canvas cache data without a leaking promise
               canvas.toBlob((pngBlob) => {
                 if (!pngBlob) return
-
-                // Isolate the async operation to keep the toBlob callback synchronous
-                try {
-                  // 5. Write binary object array data payload into system clipboard space
-                  (async (): Promise<void> => {
-                    await window.navigator.clipboard.write([
-                      new ClipboardItem({'image/png': pngBlob})
-                    ])
-                    Popup.ok('Image copied to clipboard.')
-                  })()
-                  // Popup.ok('Image copied to clipboard.')
-                } catch (err) {
-                  if (err instanceof Error) {
-                    Popup.nok('Clipboard write failed', err)
-                  }
-                }
+                this.copyImageToClipboard(pngBlob)
               }, 'image/png')
             }
 
@@ -204,5 +188,16 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
       // Display the menu panel exactly where the user clicked their mouse
       menu.showAtPosition({x: event.clientX, y: event.clientY})
     })
+  }
+
+  private async copyImageToClipboard(pngBlob: Blob) {
+    try {
+      await window.navigator.clipboard.write([
+        new ClipboardItem({'image/png': pngBlob})
+      ])
+      Popup.ok('Image copied to clipboard.')
+    } catch (err) {
+      Popup.nok('Clipboard write failed', err)
+    }
   }
 }

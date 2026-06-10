@@ -35,6 +35,11 @@ export default [
       ...js.configs.recommended.rules,
       ...tsPlugin.configs.recommended.rules,
       ...obsidianmdPlugin.configs.recommended.rules,
+      "@typescript-eslint/no-redundant-type-constituents": "error", // catch redundant types like 'Error | unknown'
+      "@typescript-eslint/no-explicit-any": "warn",
+      "no-undef": "error",
+      // "require-await": "error",
+      "@typescript-eslint/no-misused-promises": [ "error", { "checksVoidReturn": true } ],
     },
   },
 ];
