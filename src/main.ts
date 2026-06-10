@@ -143,15 +143,15 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
         .setIcon('copy')
         .onClick(async () => {
           try {
-            // 1. Get the raw XML string from your actual generated SVG element
+            /* Get the raw XML string from your actual generated SVG element */
             const svgData = new XMLSerializer().serializeToString(svgEl)
 
-            // 2. Create a hidden canvas element wrapper to convert vector to pixel raster data
+            /* Create a hidden canvas element wrapper to convert vector to pixel raster data */
             const canvas = window.activeDocument.createElement('canvas')
             const ctx = canvas.getContext('2d')
             if (!ctx) return
 
-            // Standard boundaries based on your active dimensions
+            /* Standard boundaries based on your active dimensions */
             canvas.width = localSettings.width
             canvas.height = localSettings.height
 
@@ -167,7 +167,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
               /* Extract standard PNG image blob from canvas cache data without a leaking promise */
               canvas.toBlob((pngBlob) => {
                 if (!pngBlob) return
-                this.copyImageToClipboard(pngBlob)
+                void this.copyImageToClipboard(pngBlob)
               }, 'image/png')
             }
 

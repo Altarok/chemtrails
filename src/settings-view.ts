@@ -92,7 +92,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
 
     new Setting(containerEl).setName('Code block identifier').setDesc('String you mark your code blocks with. HINT: This requires a plugin reload!')
     .addText((text) => text
-    .setPlaceholder("default: 'smiles'")
+    .setPlaceholder('default: smiles')
     .setValue(String(this.plugin.settings.codeBlockIdentifier))
     .onChange(async (value) => {
       tempCodeBlockIdentifier = value
