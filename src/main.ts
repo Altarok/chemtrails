@@ -39,6 +39,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
 
     /* Overwrite global settings */
     const localSettings: PluginSettings = Object.assign({}, this.settings)
+    const settingsRef = localSettings as Record<string, unknown>
 
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim()
@@ -51,6 +52,9 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
       const rawKey = line.slice(0, colonIndex).trim()
       const rawValue = line.slice(colonIndex + 1).trim()
 
+      if (!rawKey) continue
+      if (!rawValue) continue
+
       // 2. Verify the key actually exists on your settings object
       if (rawKey in localSettings) {
         const key = rawKey as keyof PluginSettings
@@ -60,12 +64,12 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
         if (currentTargetType === 'number') {
           const num = Number(rawValue)
           if (!isNaN(num)) {
-            (localSettings as any)[key] = num
+            settingsRef[key] = num
           }
         } else if (currentTargetType === 'boolean') {
-          (localSettings as any)[key] = rawValue === 'true'
+          settingsRef[key] = rawValue === 'true'
         } else if (currentTargetType === 'string') {
-          (localSettings as any)[key] = rawValue
+          settingsRef[key] = rawValue
         }
       }
     }
@@ -94,49 +98,49 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
       container.addClass('smiles-error-msg')
     })
 
-    this.addRightClickMenu(container, smilesString, svgEl, localSettings);
+    this.addRightClickMenu(container, smilesString, svgEl, localSettings)
   }
 
   private addRightClickMenu(container: HTMLDivElement, smilesString: string, svgEl: SVGSVGElement, localSettings: PluginSettings) {
     // Inside your registerSmiles method:
     container.addEventListener('contextmenu', (event: MouseEvent) => {
-      event.preventDefault(); // Prevent standard browser right-click menu
+      event.preventDefault() // TODO prevent standard browser right-click menu ?
 
-      const menu = new Menu();
+      const menu = new Menu()
 
       // OPTION 1: Jump to Code Block & Pre-input parameter
       menu.addItem((item) => item
         .setTitle('Edit layout height')
         .setIcon('lucide-pencil')
         .onClick(async () => {
-          // Fetch the current active markdown editor instance workspace view
-          const activeView = this.app.workspace.getActiveViewOfType(MarkdownView);
-          if (!activeView) return;
+          // Fetch the current active Markdown editor instance workspace view
+          const activeView = this.app.workspace.getActiveViewOfType(MarkdownView)
+          if (!activeView) return
 
-          const editor = activeView.editor;
+          const editor = activeView.editor
 
           // Find where the code block lives relative to the cursor or viewport
           // A common pattern is matching the exact source payload line footprint:
-          const totalLines = editor.lineCount();
+          const totalLines = editor.lineCount()
           for (let i = 0; i < totalLines; i++) {
-            const lineText = editor.getLine(i);
+            const lineText = editor.getLine(i)
 
             // Check if this line matches the target SMILES text
             if (lineText.trim() === smilesString) {
               // Place cursor directly on the line below the SMILES code string
-              const targetLine = i + 1;
+              const targetLine = i + 1
 
-              editor.setCursor({line: targetLine, ch: 0});
-              editor.focus();
+              editor.setCursor({line: targetLine, ch: 0})
+              editor.focus()
 
               // Insert a new line with "height:" pre-filled
-              editor.replaceRange('height: \n', {line: targetLine, ch: 0});
-              editor.setCursor({line: targetLine, ch: 8}); // Put cursor right after "height: "
-              break;
+              editor.replaceRange('height: \n', {line: targetLine, ch: 0})
+              editor.setCursor({line: targetLine, ch: 8}) // Put cursor right after "height: "
+              break
             }
           }
         })
-      );
+      )
 
       // OPTION 2: Copy SVG as Image
       menu.addItem((item) => {
@@ -146,52 +150,52 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
             .onClick(async () => {
               try {
                 // 1. Get the raw XML string from your actual generated SVG element
-                const svgData = new XMLSerializer().serializeToString(svgEl);
+                const svgData = new XMLSerializer().serializeToString(svgEl)
 
                 // 2. Create a hidden canvas element wrapper to convert vector to pixel raster data
-                const canvas = window.activeDocument.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                if (!ctx) return;
+                const canvas = window.activeDocument.createElement('canvas')
+                const ctx = canvas.getContext('2d')
+                if (!ctx) return
 
                 // Standard boundaries based on your active dimensions
-                canvas.width = localSettings.width;
-                canvas.height = localSettings.height;
+                canvas.width = localSettings.width
+                canvas.height = localSettings.height
 
                 // 3. Set up a modern blob image conversion pipeline
-                const img = new window.Image();
-                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
-                const url = URL.createObjectURL(svgBlob);
+                const img = new window.Image()
+                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'})
+                const url = URL.createObjectURL(svgBlob)
 
                 img.onload = async () => {
-                  ctx.drawImage(img, 0, 0);
-                  URL.revokeObjectURL(url);
+                  ctx.drawImage(img, 0, 0)
+                  URL.revokeObjectURL(url)
 
                   // 4. Extract standard PNG image blob from canvas cache data
                   canvas.toBlob(async (pngBlob) => {
-                    if (!pngBlob) return;
+                    if (!pngBlob) return
 
                     // 5. Write binary object array data payload into system clipboard space
                     await window.navigator.clipboard.write([
                       new ClipboardItem({'image/png': pngBlob})
-                    ]);
-                    new Notice('Image copied to clipboard!');
-                  }, 'image/png');
-                };
+                    ])
+                    new Notice('Image copied to clipboard!')
+                  }, 'image/png')
+                }
 
-                img.src = url;
+                img.src = url
               } catch (err) {
                 if (err instanceof Error) {
-                  new Notice(`Copy failed: ${err.message}`);
+                  new Notice(`Copy failed: ${err.message}`)
                 } else {
-                  new Notice('Copy failed due to an unknown error.');
+                  new Notice('Copy failed due to an unknown error.')
                 }
               }
-            });
+            })
         }
-      );
+      )
 
       // Display the menu panel exactly where the user clicked their mouse
-      menu.showAtPosition({x: event.clientX, y: event.clientY});
-    });
+      menu.showAtPosition({x: event.clientX, y: event.clientY})
+    })
   }
 }

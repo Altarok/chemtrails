@@ -112,7 +112,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
     .setWarning() /* red color TODO #v1.13.0 change to .setDestructive() */
     .onClick(async () => {
       /* JS Hint: be aware that we can't just overwrite one with the other */
-      this.plugin.settings = Object.assign({}, DEFAULT_SETTINGS);
+      this.plugin.settings = Object.assign({}, DEFAULT_SETTINGS)
       await this.plugin.saveSettings()
       this.display()
     }))
@@ -120,7 +120,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
   }
 
   private addNumericSetting(container: HTMLElement, name: string, desc: string, key: keyof OriginalSmilesDrawerNumericSettings, isInteger: boolean) {
-    const pattern: RegExp = isInteger ? nonNegativeIntegerPattern : nonNegativeNumberPattern;
+    const pattern: RegExp = isInteger ? nonNegativeIntegerPattern : nonNegativeNumberPattern
 
     const defaultValue: number = DEFAULT_SETTINGS[key]
 
@@ -132,13 +132,13 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
       .setValue(String(this.plugin.settings[key]))
       .onChange(async (value) => {
         if (pattern.test(value)) {
-          this.plugin.settings[key] = Number(value);
-          await this.plugin.saveSettings();
+          this.plugin.settings[key] = Number(value)
+          await this.plugin.saveSettings()
         } else {
-          this.showNoticePanel(`Invalid value for ${name}: '${value}'`);
+          this.showNoticePanel(`Invalid value for ${name}: '${value}'`)
         }
       })
-    );
+    )
   }
 
   private showNoticePanel(input: string) {
