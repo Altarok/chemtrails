@@ -177,19 +177,20 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
                 if (!pngBlob) return
 
                 // Isolate the async operation to keep the toBlob callback synchronous
-                (async () => {
-                  try {
-                    // 5. Write binary object array data payload into system clipboard space
+                try {
+                  // 5. Write binary object array data payload into system clipboard space
+                  (async (): Promise<void> => {
                     await window.navigator.clipboard.write([
                       new ClipboardItem({'image/png': pngBlob})
                     ])
                     Popup.ok('Image copied to clipboard.')
-                  } catch (err) {
-                    if (err instanceof Error) {
-                      Popup.nok('Clipboard write failed', err)
-                    }
+                  })()
+                  // Popup.ok('Image copied to clipboard.')
+                } catch (err) {
+                  if (err instanceof Error) {
+                    Popup.nok('Clipboard write failed', err)
                   }
-                })()
+                }
               }, 'image/png')
             }
 

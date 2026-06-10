@@ -21,7 +21,7 @@ function warn(input: string) {
 /** Trigger standardized error Notice
  * @param input should not end on a dot
  * @param err should be a caught Error */
-function nok(input: string, err: Error | unknown) {
+function nok(input: string, err: unknown) {
   if (err instanceof Error) {
     new Notice(`${input}: ${err.message}`, long)
   } else {
