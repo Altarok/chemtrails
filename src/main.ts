@@ -8,7 +8,6 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
   settings: PluginSettings = DEFAULT_SETTINGS
 
   async onload() {
-
     await this.loadSettings()
 
     this.registerMarkdownCodeBlockProcessor(this.settings.codeBlockIdentifier, (source, el) => {
@@ -19,7 +18,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
   }
 
   async loadSettings() {
-    let source = (await this.loadData()) as Partial<PluginSettings> | null
+    const source = (await this.loadData()) as Partial<PluginSettings> | null
     const isSourceExists: boolean = !!source
     this.settings = Object.assign({}, DEFAULT_SETTINGS, source)
     if (!isSourceExists) {
@@ -40,29 +39,27 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
 
     /* Overwrite global settings */
     const localSettings: PluginSettings = Object.assign({}, this.settings)
-    /* #cast-through-unknown */
+    /* #cast-through-unknown to bypass strict type overlapping constraints */
     const settingsRef = localSettings as unknown as Record<string, unknown>
 
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim()
       if (!line) continue
 
-      // 1. Split by the first colon only, in case a value contains a colon
+      /* Split by the first colon only, in case a value contains a colon */
       const colonIndex = line.indexOf(':')
       if (colonIndex === -1) continue
 
       const rawKey = line.slice(0, colonIndex).trim()
       const rawValue = line.slice(colonIndex + 1).trim()
 
-      if (!rawKey) continue
-      if (!rawValue) continue
+      if (!rawKey || !rawValue) continue
 
-      // 2. Verify the key actually exists on your settings object
+      /* Verify the key actually exists on your settings object */
       if (rawKey in localSettings) {
-        // const key = rawKey as keyof PluginSettings
         const currentTargetType = typeof settingsRef[rawKey]
 
-        // 3. Parse and cast the string into the correct runtime data type dynamically
+        /* Parse and cast the string into the correct runtime data type dynamically */
         if (currentTargetType === 'number') {
           const num = Number(rawValue)
           if (!isNaN(num)) {
@@ -76,23 +73,23 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
       }
     }
 
-    // Create a clean container element for the SVG inside the note DOM
+    /* Create a clean container element for the SVG inside the note DOM */
     const container = el.createDiv({cls: 'obsidian-smiles-container'})
 
-    // Set up the target SVG element with responsive attributes
+    /* Set up the target SVG element with responsive attributes */
     const svgEl = window.activeDocument.createElementNS('http://www.w3.org/2000/svg', 'svg')
     svgEl.setAttrs({'width': localSettings.width, 'height': localSettings.height})
 
     container.appendChild(svgEl)
 
-    // Initialize the SvgDrawer with styling options
+    /* Initialize the SvgDrawer with styling options */
     const svgDrawer = new SmilesDrawer.SvgDrawer(localSettings)
 
-    // Detect the current Obsidian theme to choose a color palette
+    /* Detect the current Obsidian theme to choose a color palette */
     const isDarkMode: boolean = window.activeDocument.body.classList.contains('theme-dark')
     const themeMode = isDarkMode ? 'dark' : 'light'
 
-    // Parse and render
+    /* External magic */
     SmilesDrawer.parse(smilesString, (tree): void => {
       svgDrawer.draw(tree, svgEl, themeMode)
     }, (error) => {
@@ -104,50 +101,46 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
   }
 
   private addRightClickMenu(container: HTMLDivElement, smilesString: string, svgEl: SVGSVGElement, localSettings: PluginSettings) {
-    // Inside your registerSmiles method:
     container.addEventListener('contextmenu', (event: MouseEvent) => {
-      event.preventDefault() // prevents standard browser right-click menu TODO remove?
+      event.preventDefault() // prevents standard browser context menu TODO extend instead of remove?
 
       const menu = new Menu()
 
-      // OPTION 1: Jump to Code Block & Pre-input parameter
+      /* Context menu option 1: Jump to Code Block & Pre-input parameter */
       menu.addItem((item) => item
         .setTitle('Edit layout height')
-        .setIcon('lucide-pencil')
+        .setIcon('pencil')
         .onClick(async () => {
           const activeView = this.app.workspace.getActiveViewOfType(MarkdownView)
           if (!activeView) return
 
           const editor = activeView.editor
-
-          // Find where the code block lives relative to the cursor or viewport
-          // A common pattern is matching the exact source payload line footprint:
           const totalLines = editor.lineCount()
+
           for (let i = 0; i < totalLines; i++) {
             const lineText = editor.getLine(i)
 
-            // Check if this line matches the target SMILES text
+            /* Look for matching SMILES notation */
             if (lineText.trim() === smilesString) {
-              // Place cursor directly on the line below the SMILES code string
               const targetLine = i + 1
 
               editor.setCursor({line: targetLine, ch: 0})
               editor.focus()
 
-              // Insert a new line with "height:" pre-filled
+              /* Insert a new config line directly below */
               editor.replaceRange('height: \n', {line: targetLine, ch: 0})
-              editor.setCursor({line: targetLine, ch: 8}) // Put cursor right after "height: "
+              editor.setCursor({line: targetLine, ch: 8})
               break
             }
           }
         })
       )
 
-      // OPTION 2: Copy SVG as Image
+      /* Context menu option 2: Copy SVG as PNG (as of version 0.3.0 ) */
       menu.addItem((item) =>
         item
         .setTitle('Copy as image (png)')
-        .setIcon('lucide-copy')
+        .setIcon('copy')
         .onClick(async () => {
           try {
             // 1. Get the raw XML string from your actual generated SVG element
@@ -162,7 +155,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
             canvas.width = localSettings.width
             canvas.height = localSettings.height
 
-            // 3. Set up a modern blob image conversion pipeline
+            /* Set up a modern blob image conversion pipeline */
             const img = new window.Image()
             const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'})
             const url = URL.createObjectURL(svgBlob)
@@ -171,7 +164,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
               ctx.drawImage(img, 0, 0)
               URL.revokeObjectURL(url)
 
-              // 4. Extract standard PNG image blob from canvas cache data without a leaking promise
+              /* Extract standard PNG image blob from canvas cache data without a leaking promise */
               canvas.toBlob((pngBlob) => {
                 if (!pngBlob) return
                 this.copyImageToClipboard(pngBlob)
@@ -185,7 +178,6 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
         })
       )
 
-      // Display the menu panel exactly where the user clicked their mouse
       menu.showAtPosition({x: event.clientX, y: event.clientY})
     })
   }

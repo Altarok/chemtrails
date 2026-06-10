@@ -88,8 +88,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
       await this.plugin.saveSettings()
     }))
 
-
-    containerEl.createEl('hr') ///////////////////////////////////////////
+    containerEl.createEl('hr')
 
     new Setting(containerEl).setName('Code block identifier').setDesc('String you mark your code blocks with. HINT: This requires a plugin reload!')
     .addText((text) => text

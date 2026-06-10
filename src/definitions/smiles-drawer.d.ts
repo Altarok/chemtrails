@@ -50,8 +50,7 @@ declare module 'smiles-drawer' {
     isometric: boolean
   }
 
-  // The parsed molecular graph structure is handled internally by the library.
-  // Using 'unknown' forces safety when passing it between parse() and draw().
+  /* The parsed molecular graph structure is handled internally by the library. Using 'unknown' forces safety when passing it between parse() and draw(). */
   type MoleculeTree = unknown
 
   class SvgDrawer {
@@ -66,16 +65,16 @@ declare module 'smiles-drawer' {
   }
 
   /* Not used - YET */
-  class CanvasDrawer {
-    constructor(options: Partial<OriginalSmilesDrawerSettings>)
-
-    draw(
-      tree: MoleculeTree,
-      target: HTMLCanvasElement | string,
-      theme: string,
-      weights?: unknown
-    ): void
-  }
+  // class CanvasDrawer {
+  //   constructor(options: Partial<OriginalSmilesDrawerSettings>)
+  //
+  //   draw(
+  //     tree: MoleculeTree,
+  //     target: HTMLCanvasElement | string,
+  //     theme: string,
+  //     weights?: unknown
+  //   ): void
+  // }
 
   function parse(
     smiles: string,
@@ -83,5 +82,5 @@ declare module 'smiles-drawer' {
     errorCallback?: (error: Error) => void
   ): void
 
-  export {SvgDrawer, CanvasDrawer, parse}
+  export {SvgDrawer, /*CanvasDrawer,*/ parse}
 }

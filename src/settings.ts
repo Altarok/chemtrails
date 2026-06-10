@@ -9,11 +9,11 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   codeBlockIdentifier: 'smiles',
   /* Original smiles-drawer settings:  */
   width: 500,
-  height: 150, // OG was 500
+  height: 150, /* OG was 500 */
   bondThickness: 1,
   bondLength: 30,
   shortBondLength: 0.8,
-  bondSpacing: 5.1, // OG was 0.17 * 30 (bondLength),
+  bondSpacing: 5.1, /* OG was 0.17 * 30 ( 30 = bondLength) */
   atomVisualization: 'default',
   fontSizeLarge: 11,
   fontSizeSmall: 3,
