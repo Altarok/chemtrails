@@ -4,6 +4,7 @@ import SmilesDrawerSettingsTab from './settings-view'
 import {DEFAULT_SETTINGS, PluginSettings} from './settings'
 import {Popup} from './popup-util'
 
+/* To read: https://hunterheidenreich.com/notes/chemistry/molecular-representations/notations/smiles/ */
 export default class SmilesDrawerToObsidianPlugin extends Plugin {
   settings: PluginSettings = DEFAULT_SETTINGS
 

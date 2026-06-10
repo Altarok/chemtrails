@@ -23,8 +23,7 @@ CN1C=NC2=C1C(=O)N(C(=O)N2C)C
 
 # Installation
 ## Community Marketplace
-- Chemtrails in the Obsidian Community Plugins directory.
-- Install and Enable.
+- Chemtrails in the Obsidian Community Plugins directory, install and Enable.
 ## Manual Installation
 - Download main.js, manifest.json, and styles.css from the latest release.
 - Move the files into your vault's plugin directory: <vault>/.obsidian/plugins/chemtrails/

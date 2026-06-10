@@ -34,6 +34,8 @@ declare module 'smiles-drawer' {
    * - Show terminal carbons (deprecated, use showCarbons). terminalCarbons: boolean = false
    * - Debug (draw debug information to canvas). debug: boolean = false
    * - Color themes. themes: object = any
+   *
+   * See https://github.com/reymond-group/smilesDrawer/blob/master/README.md#options
    */
   export interface OriginalSmilesDrawerSettings extends OriginalSmilesDrawerNumericSettings {
     /* Atom Visualization (default: 'default') */
