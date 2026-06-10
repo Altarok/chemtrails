@@ -39,7 +39,8 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
 
     /* Overwrite global settings */
     const localSettings: PluginSettings = Object.assign({}, this.settings)
-    const settingsRef = localSettings as Record<string, unknown>
+    /* #cast-through-unknown */
+    const settingsRef = localSettings as unknown as Record<string, unknown>
 
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i].trim()
