@@ -34,4 +34,4 @@ CN1C=NC2=C1C(=O)N(C(=O)N2C)C
 - 0.1.0: Make it work
 - 0.2.0: Add settings, including renaming of Markdown code block identifier and most of [the original smilesDrawer options](https://github.com/reymond-group/smilesDrawer/blob/master/README.md#options) parameters.
 - 0.3.0: Add option to copy SVG as PNG
-- 
+- 0.4.0: Add optional local settings to each image, overwriting global settings
