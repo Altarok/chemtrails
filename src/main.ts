@@ -158,7 +158,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
                 canvas.height = localSettings.height;
 
                 // 3. Set up a modern blob image conversion pipeline
-                const img = new Image();
+                const img = new window.Image();
                 const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
                 const url = URL.createObjectURL(svgBlob);
 
@@ -171,7 +171,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
                     if (!pngBlob) return;
 
                     // 5. Write binary object array data payload into system clipboard space
-                    await navigator.clipboard.write([
+                    await window.navigator.clipboard.write([
                       new ClipboardItem({'image/png': pngBlob})
                     ]);
                     new Notice('Image copied to clipboard!');
