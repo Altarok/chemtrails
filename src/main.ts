@@ -83,7 +83,6 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
     container.style.height = `${(localSettings.height + 2)}px` /* add 2 for border */
     container.style.display = cssStyleDisplay
 
-
     /* Set up the target SVG element with responsive attributes */
     const svgEl = window.activeDocument.createElementNS('http://www.w3.org/2000/svg', 'svg')
     svgEl.setAttrs({'width': 'auto', 'height': localSettings.height})
