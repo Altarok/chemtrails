@@ -107,13 +107,13 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
       })
     )
 
-    // /* TODO COMMENT OUT FOR PRODUCTION !! */
-    // new Setting(containerEl).setName('DEBUG ONLY: Reload plugin').setDesc('Redraws all diagrams. Necessary when code block identifier changes.')
-    // .addButton(button => button.setTooltip('Reload').setIcon('refresh-ccw').onClick(async () => {
-    //   await this.app.plugins.disablePlugin(this.plugin.manifest.id)
-    //   await this.app.plugins.enablePlugin(this.plugin.manifest.id)
-    //   Popup.ok('Plugin reloaded!')
-    // }))
+    /* TODO COMMENT OUT FOR PRODUCTION !! */
+    new Setting(containerEl).setName('DEBUG ONLY: Reload plugin').setDesc('Redraws all diagrams. Necessary when code block identifier changes.')
+    .addButton(button => button.setTooltip('Reload').setIcon('refresh-ccw').onClick(async () => {
+      await this.app.plugins.disablePlugin(this.plugin.manifest.id)
+      await this.app.plugins.enablePlugin(this.plugin.manifest.id)
+      Popup.ok('Plugin reloaded!')
+    }))
   }
 
   private addResetButton(containerEl: HTMLElement) {
