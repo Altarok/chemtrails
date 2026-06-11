@@ -77,7 +77,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
     /* Create a clean container element for the SVG inside the note DOM */
     const container = el.createDiv({cls: 'obsidian-smiles-container'})
     if (localSettings.backgroundColor) container.style.backgroundColor = localSettings.backgroundColor
-    container.style.height = `${(localSettings.height + 34 + 2 * localSettings.padding)}px`;
+    container.style.height = `${(localSettings.height + 2 * localSettings.padding + 2)}px`;
     // container.style.overflow = 'hidden';
 
     /* Set up the target SVG element with responsive attributes */

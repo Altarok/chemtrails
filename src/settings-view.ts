@@ -63,7 +63,6 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
       .addOption('gruvbox', 'gruvbox')
       .addOption('gruvbox-dark', 'gruvbox-dark')
       .addOption('custom', 'reymond-group')
-
       .setValue(this.plugin.settings.theme).onChange(async (value: string) => {
         this.plugin.settings.theme = value as ThemesType
         await this.plugin.saveSettings()
@@ -71,7 +70,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
     )
 
     new Setting(containerEl).setName('Background color').setDesc('Default background color for images. (default: none). HINT: This may interfere with your theme!')
-    .addText((text) => text .setValue(this.plugin.settings.backgroundColor || 'none').setDisabled(true))
+    .addText((text) => text.setValue(this.plugin.settings.backgroundColor || 'none').setDisabled(true))
     .addColorPicker(color => color.setValue(this.plugin.settings.backgroundColor).onChange(async (value) => {
       this.plugin.settings.backgroundColor = value
       await this.plugin.saveSettings()
@@ -108,12 +107,12 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
     )
 
     /* TODO COMMENT OUT FOR PRODUCTION !! */
-    new Setting(containerEl).setName('DEBUG ONLY: Reload plugin').setDesc('Redraws all diagrams. Necessary when code block identifier changes.')
-    .addButton(button => button.setTooltip('Reload').setIcon('refresh-ccw').onClick(async () => {
-      await this.app.plugins.disablePlugin(this.plugin.manifest.id)
-      await this.app.plugins.enablePlugin(this.plugin.manifest.id)
-      Popup.ok('Plugin reloaded!')
-    }))
+    // new Setting(containerEl).setName('DEBUG ONLY: Reload plugin').setDesc('Redraws all diagrams. Necessary when code block identifier changes.')
+    // .addButton(button => button.setTooltip('Reload').setIcon('refresh-ccw').onClick(async () => {
+    //   await this.app.plugins.disablePlugin(this.plugin.manifest.id)
+    //   await this.app.plugins.enablePlugin(this.plugin.manifest.id)
+    //   Popup.ok('Plugin reloaded!')
+    // }))
   }
 
   private addResetButton(containerEl: HTMLElement) {
