@@ -75,7 +75,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
       }
     }
 
-    const cssStyleDisplay = localSettings.containerWidthMax ? 'flex' : 'inline-block'
+    const cssStyleDisplay = localSettings.containerWidthMax ? 'flex' : 'inline-flex'
 
     /* Create a clean container element for the SVG inside the note DOM */
     const container = el.createDiv({cls: 'obsidian-smiles-container'})
