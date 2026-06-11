@@ -3,6 +3,8 @@ import {OriginalSmilesDrawerSettings, ThemesType} from 'smiles-drawer'
 export interface PluginSettings extends OriginalSmilesDrawerSettings {
   codeBlockIdentifier: string
   backgroundColor: string
+  /* False means small containers, true means full window width */
+  containerWidthMax: boolean
 }
 
 function getDefaultTheme(): ThemesType {
@@ -10,10 +12,12 @@ function getDefaultTheme(): ThemesType {
   return isDarkMode ? 'dark' : 'light'
 }
 
+
 export const DEFAULT_SETTINGS: PluginSettings = {
   /* My settings */
   codeBlockIdentifier: 'smiles',
   backgroundColor: '',
+  containerWidthMax: false,
   /* Original smiles-drawer settings:  */
   width: 250,
   height: 150, /* OG was 500 */

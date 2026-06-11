@@ -1,6 +1,5 @@
 /* Container layout for the chemical drawing */
 .obsidian-smiles-container {
-  display: flex;
   justify-content: center;
   align-items: center;
   background-color: var(--background-secondary);

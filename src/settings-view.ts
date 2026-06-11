@@ -24,7 +24,9 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
     containerEl.empty()
 
     /* Code block identifier and dropdown menus */
-    this.addMajorSettings(containerEl)
+    this.addMajorPluginSettings(containerEl)
+    this.addHorizontalSeparator(containerEl)
+    this.addMajorGraphicSettings(containerEl)
     this.addHorizontalSeparator(containerEl)
     this.addVisualSettings(containerEl)
     this.addHorizontalSeparator(containerEl)
@@ -32,56 +34,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
 
   }
 
-  private addMajorSettings(containerEl: HTMLElement) {
-    new Setting(containerEl).setName('Code block identifier').setDesc('String you mark your code blocks with. HINT: This requires a plugin reload!')
-    .addText((text) => text
-    .setPlaceholder('default: smiles')
-    .setValue(String(this.plugin.settings.codeBlockIdentifier))
-    .onChange(async (value) => {
-      this.tempCodeBlockIdentifier = value
-    }))
-    .addExtraButton(button => button.setTooltip('Save').setIcon('save').onClick(async () => {
-      let isValid: boolean = this.tempCodeBlockIdentifier?.length > 0
-      if (isValid) {
-        this.plugin.settings.codeBlockIdentifier = this.tempCodeBlockIdentifier
-        await this.plugin.saveSettings()
-        Popup.ok('Please reload the plugin now')
-      } else Popup.warn(`Invalid code block identifier: '${this.tempCodeBlockIdentifier}'`)
-    }))
-
-    new Setting(containerEl).setName('Theme').setDesc('Themes are predefined by the reymond-group. See README. HINT: This requires a plugin reload!')
-    .addDropdown((button) => button
-      .addOption('dark', 'dark (automatic)')
-      .addOption('light', 'light (automatic)')
-      .addOption('oldschool', 'oldschool')
-      .addOption('solarized', 'solarized')
-      .addOption('solarized-dark', 'solarized-dark')
-      .addOption('matrix', 'matrix')
-      .addOption('github', 'github')
-      .addOption('carbon', 'carbon')
-      .addOption('cyberpunk', 'cyberpunk')
-      .addOption('gruvbox', 'gruvbox')
-      .addOption('gruvbox-dark', 'gruvbox-dark')
-      .addOption('custom', 'reymond-group')
-      .setValue(this.plugin.settings.theme).onChange(async (value: string) => {
-        this.plugin.settings.theme = value as ThemesType
-        await this.plugin.saveSettings()
-      })
-    )
-
-    new Setting(containerEl).setName('Background color').setDesc('Default background color for images. (default: none). HINT: This may interfere with your theme!')
-    .addText((text) => text.setValue(this.plugin.settings.backgroundColor || 'none').setDisabled(true))
-    .addColorPicker(color => color.setValue(this.plugin.settings.backgroundColor).onChange(async (value) => {
-      this.plugin.settings.backgroundColor = value
-      await this.plugin.saveSettings()
-      this.display()
-    }))
-    .addExtraButton(button => button.setTooltip('Reset').setIcon('reset').onClick(async () => {
-      this.plugin.settings.backgroundColor = ''
-      await this.plugin.saveSettings()
-      this.display()
-    }))
-
+  private addMajorGraphicSettings(containerEl: HTMLElement) {
     new Setting(containerEl).setName('Atom Visualization').setDesc('Type of atom visualization. Choose from: characters (default), balls or none')
     .addDropdown((dc) => dc
       .addOption('default', 'characters (default)')
@@ -198,5 +151,62 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
         }
       })
     )
+  }
+
+  private addMajorPluginSettings(containerEl: HTMLElement) {
+    new Setting(containerEl).setName('Code block identifier').setDesc('String you mark your code blocks with. HINT: This requires a plugin reload!')
+    .addText((text) => text
+    .setPlaceholder('default: smiles')
+    .setValue(String(this.plugin.settings.codeBlockIdentifier))
+    .onChange(async (value) => {
+      this.tempCodeBlockIdentifier = value
+    }))
+    .addExtraButton(button => button.setTooltip('Save').setIcon('save').onClick(async () => {
+      let isValid: boolean = this.tempCodeBlockIdentifier?.length > 0
+      if (isValid) {
+        this.plugin.settings.codeBlockIdentifier = this.tempCodeBlockIdentifier
+        await this.plugin.saveSettings()
+        Popup.ok('Please reload the plugin now')
+      } else Popup.warn(`Invalid code block identifier: '${this.tempCodeBlockIdentifier}'`)
+    }))
+
+    new Setting(containerEl).setName('Theme').setDesc('Themes are predefined by the reymond-group. See README. HINT: This requires a plugin reload!')
+    .addDropdown((button) => button
+      .addOption('dark', 'dark (automatic)')
+      .addOption('light', 'light (automatic)')
+      .addOption('oldschool', 'oldschool')
+      .addOption('solarized', 'solarized')
+      .addOption('solarized-dark', 'solarized-dark')
+      .addOption('matrix', 'matrix')
+      .addOption('github', 'github')
+      .addOption('carbon', 'carbon')
+      .addOption('cyberpunk', 'cyberpunk')
+      .addOption('gruvbox', 'gruvbox')
+      .addOption('gruvbox-dark', 'gruvbox-dark')
+      .addOption('custom', 'reymond-group')
+      .setValue(this.plugin.settings.theme).onChange(async (value: string) => {
+        this.plugin.settings.theme = value as ThemesType
+        await this.plugin.saveSettings()
+      })
+    )
+
+    new Setting(containerEl).setName('Background color').setDesc('Default background color for images. (default: none). HINT: This may interfere with your theme!')
+    .addText((text) => text.setValue(this.plugin.settings.backgroundColor || 'none').setDisabled(true))
+    .addColorPicker(color => color.setValue(this.plugin.settings.backgroundColor).onChange(async (value) => {
+      this.plugin.settings.backgroundColor = value
+      await this.plugin.saveSettings()
+      this.display()
+    }))
+    .addExtraButton(button => button.setTooltip('Reset').setIcon('reset').onClick(async () => {
+      this.plugin.settings.backgroundColor = ''
+      await this.plugin.saveSettings()
+      this.display()
+    }))
+
+    new Setting(containerEl).setName('Maximum display width').setDesc('Draw molecules over entire window width. (default: false)')
+    .addToggle((toggle) => toggle.setValue(this.plugin.settings.containerWidthMax).onChange(async (value) => {
+      this.plugin.settings.containerWidthMax = value
+      await this.plugin.saveSettings()
+    }))
   }
 }
