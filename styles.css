@@ -3,19 +3,24 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem;
-  margin: 1rem 0;
-  background-color: var(--background-secondary);
+  /* background-color: var(--background-secondary); /* */
   border-radius: var(--radius-m);
   border: 1px solid var(--background-modifier-border);
   overflow: hidden;
+  /* background-color: #ff0; /* */
+  /* height: attr(height px, auto); /* */
+  margin: 0;
+  padding: 0;
 }
 
 /* Ensure the SVG scales responsively inside the code block area */
 .obsidian-smiles-container svg {
-  max-width: 100%;
-  height: auto;
+  width: 100%;
+  /*height: auto;*/
   display: block;
+  /* background-color: #123456; /* */
+  flex-shrink: 0;
+  max-height: 100%;
 }
 
 /* Error message formatting for broken SMILES syntax */
