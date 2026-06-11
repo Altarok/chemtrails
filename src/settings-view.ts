@@ -1,7 +1,7 @@
 import {App, PluginSettingTab, Setting} from 'obsidian'
 import SmilesDrawerToObsidianPlugin from './main'
-import {AtomVisualizationType, OriginalSmilesDrawerNumericSettings, ShowCarbonsType} from 'smiles-drawer'
-import {DEFAULT_SETTINGS} from './settings'
+import {AtomVisualizationType, OriginalSmilesDrawerNumericSettings, ShowCarbonsType, ThemesType} from 'smiles-drawer'
+import {DEFAULT_SETTINGS} from './definitions/settings'
 import {Popup} from './popup-util'
 
 const nonNegativeIntegerPattern = /^\d+$/
@@ -9,26 +9,79 @@ const nonNegativeNumberPattern = /^\d+(\.\d+)?$/
 
 /* See https://docs.obsidian.md/Plugins/User+interface/Settings  */
 export default class SmilesDrawerSettingsTab extends PluginSettingTab {
+  tempCodeBlockIdentifier: string = 'smiles'
+
   constructor(app: App, readonly plugin: SmilesDrawerToObsidianPlugin) {
     super(app, plugin)
+    this.tempCodeBlockIdentifier = this.plugin.settings.codeBlockIdentifier
   }
 
-  display(): void {
-    let {containerEl} = this
 
-    let tempCodeBlockIdentifier: string = this.plugin.settings.codeBlockIdentifier
+  display(): void {
+
+    let {containerEl} = this
 
     containerEl.empty()
 
-    this.addNumericSetting(containerEl, 'Height', 'Height of rendered code block.', 'height', true)
+    /* Code block identifier and dropdown menus */
+    this.addMajorSettings(containerEl)
+    this.addHorizontalSeparator(containerEl)
+    this.addVisualSettings(containerEl)
+    this.addHorizontalSeparator(containerEl)
+    this.addResetButton(containerEl)
 
-    this.addNumericSetting(containerEl, 'Bond thickness', 'Bond thickness.', 'bondThickness', false)
+  }
 
-    this.addNumericSetting(containerEl, 'Bond length', 'Bond length between atoms.', 'bondLength', false)
+  private addMajorSettings(containerEl: HTMLElement) {
+    new Setting(containerEl).setName('Code block identifier').setDesc('String you mark your code blocks with. HINT: This requires a plugin reload!')
+    .addText((text) => text
+    .setPlaceholder('default: smiles')
+    .setValue(String(this.plugin.settings.codeBlockIdentifier))
+    .onChange(async (value) => {
+      this.tempCodeBlockIdentifier = value
+    }))
+    .addExtraButton(button => button.setTooltip('Save').setIcon('save').onClick(async () => {
+      let isValid: boolean = this.tempCodeBlockIdentifier?.length > 0
+      if (isValid) {
+        this.plugin.settings.codeBlockIdentifier = this.tempCodeBlockIdentifier
+        await this.plugin.saveSettings()
+        Popup.ok('Please reload the plugin now')
+      } else Popup.warn(`Invalid code block identifier: '${this.tempCodeBlockIdentifier}'`)
+    }))
 
-    this.addNumericSetting(containerEl, 'Short bond length', 'Short bond length (e.g. double bonds) as a fraction of bond length.', 'shortBondLength', false)
+    new Setting(containerEl).setName('Theme').setDesc('Themes are predefined by the reymond-group. See README. HINT: This requires a plugin reload!')
+    .addDropdown((button) => button
+      .addOption('dark', 'dark (automatic)')
+      .addOption('light', 'light (automatic)')
+      .addOption('oldschool', 'oldschool')
+      .addOption('solarized', 'solarized')
+      .addOption('solarized-dark', 'solarized-dark')
+      .addOption('matrix', 'matrix')
+      .addOption('github', 'github')
+      .addOption('carbon', 'carbon')
+      .addOption('cyberpunk', 'cyberpunk')
+      .addOption('gruvbox', 'gruvbox')
+      .addOption('gruvbox-dark', 'gruvbox-dark')
+      .addOption('custom', 'reymond-group')
 
-    this.addNumericSetting(containerEl, 'Bond spacing', 'Bond spacing (e.g. space between double bonds).', 'bondSpacing', false)
+      .setValue(this.plugin.settings.theme).onChange(async (value: string) => {
+        this.plugin.settings.theme = value as ThemesType
+        await this.plugin.saveSettings()
+      })
+    )
+
+    new Setting(containerEl).setName('Background color').setDesc('Default background color for images. (default: none). HINT: This may interfere with your theme!')
+    .addText((text) => text .setValue(this.plugin.settings.backgroundColor || 'none').setDisabled(true))
+    .addColorPicker(color => color.setValue(this.plugin.settings.backgroundColor).onChange(async (value) => {
+      this.plugin.settings.backgroundColor = value
+      await this.plugin.saveSettings()
+      this.display()
+    }))
+    .addExtraButton(button => button.setTooltip('Reset').setIcon('reset').onClick(async () => {
+      this.plugin.settings.backgroundColor = ''
+      await this.plugin.saveSettings()
+      this.display()
+    }))
 
     new Setting(containerEl).setName('Atom Visualization').setDesc('Type of atom visualization. Choose from: characters (default), balls or none')
     .addDropdown((dc) => dc
@@ -40,18 +93,6 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
         await this.plugin.saveSettings()
       })
     )
-
-    this.addNumericSetting(containerEl, 'Large font size', 'Large font size, in pt for elements.', 'fontSizeLarge', true)
-
-    this.addNumericSetting(containerEl, 'Small font size', 'Small font size, in pt for numbers.', 'fontSizeSmall', true)
-
-    this.addNumericSetting(containerEl, 'Padding', 'Padding.', 'padding', true)
-
-    new Setting(containerEl).setName('Experimental SSSR').setDesc('Use experimental SSSR (default: false)')
-    .addToggle((toggle) => toggle.setValue(this.plugin.settings.experimentalSSSR).onChange(async (value) => {
-      this.plugin.settings.experimentalSSSR = value
-      await this.plugin.saveSettings()
-    }))
 
     new Setting(containerEl).setName('Show explicit carbons').setDesc('Show explicit carbon atoms. Choose from: none, auto (default), terminal, acyclic, all')
     .addDropdown((dc) => dc
@@ -65,6 +106,55 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
         await this.plugin.saveSettings()
       })
     )
+
+    // /* TODO COMMENT OUT FOR PRODUCTION !! */
+    // new Setting(containerEl).setName('DEBUG ONLY: Reload plugin').setDesc('Redraws all diagrams. Necessary when code block identifier changes.')
+    // .addButton(button => button.setTooltip('Reload').setIcon('refresh-ccw').onClick(async () => {
+    //   await this.app.plugins.disablePlugin(this.plugin.manifest.id)
+    //   await this.app.plugins.enablePlugin(this.plugin.manifest.id)
+    //   Popup.ok('Plugin reloaded!')
+    // }))
+  }
+
+  private addResetButton(containerEl: HTMLElement) {
+    new Setting(containerEl).setName('Reset values').setDesc('Reset everything to default.')
+    .addButton((button) => button
+    .setButtonText('Reset')
+    .setWarning() /* red color TODO #v1.13.0 change to .setDestructive() */
+    .onClick(async () => {
+      /* JS Hint: be aware that we can't just overwrite one with the other */
+      this.plugin.settings = Object.assign({}, DEFAULT_SETTINGS)
+      await this.plugin.saveSettings()
+      this.display()
+    }))
+  }
+
+  private addHorizontalSeparator(containerEl: HTMLElement) {
+    containerEl.createEl('hr')
+  }
+
+  private addVisualSettings(containerEl: HTMLElement) {
+    this.addNumericSetting(containerEl, 'Height', 'Height of rendered code block.', 'height', true)
+
+    this.addNumericSetting(containerEl, 'Bond thickness', 'Bond thickness.', 'bondThickness', false)
+
+    this.addNumericSetting(containerEl, 'Bond length', 'Bond length between atoms.', 'bondLength', false)
+
+    this.addNumericSetting(containerEl, 'Short bond length', 'Short bond length (e.g. double bonds) as a fraction of bond length.', 'shortBondLength', false)
+
+    this.addNumericSetting(containerEl, 'Bond spacing', 'Bond spacing (e.g. space between double bonds).', 'bondSpacing', false)
+
+    this.addNumericSetting(containerEl, 'Large font size', 'Large font size, in pt for elements.', 'fontSizeLarge', true)
+
+    this.addNumericSetting(containerEl, 'Small font size', 'Small font size, in pt for numbers.', 'fontSizeSmall', true)
+
+    this.addNumericSetting(containerEl, 'Padding', 'Padding.', 'padding', true)
+
+    new Setting(containerEl).setName('Experimental SSSR').setDesc('Use experimental SSSR (default: false)')
+    .addToggle((toggle) => toggle.setValue(this.plugin.settings.experimentalSSSR).onChange(async (value) => {
+      this.plugin.settings.experimentalSSSR = value
+      await this.plugin.saveSettings()
+    }))
 
     new Setting(containerEl).setName('Show hydrogen atoms').setDesc('Show explicit hydrogen atoms (default: true)')
     .addToggle((toggle) => toggle.setValue(this.plugin.settings.explicitHydrogens).onChange(async (value) => {
@@ -87,36 +177,6 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
       this.plugin.settings.isometric = value
       await this.plugin.saveSettings()
     }))
-
-    containerEl.createEl('hr')
-
-    new Setting(containerEl).setName('Code block identifier').setDesc('String you mark your code blocks with. HINT: This requires a plugin reload!')
-    .addText((text) => text
-    .setPlaceholder('default: smiles')
-    .setValue(String(this.plugin.settings.codeBlockIdentifier))
-    .onChange(async (value) => {
-      tempCodeBlockIdentifier = value
-    }))
-    .addExtraButton(button => button.setTooltip('Save').setIcon('save').onClick(async () => {
-      let isValid: boolean = tempCodeBlockIdentifier?.length > 0
-      if (isValid) {
-        this.plugin.settings.codeBlockIdentifier = tempCodeBlockIdentifier
-        await this.plugin.saveSettings()
-        Popup.ok('Please reload the plugin now')
-      } else Popup.warn(`Invalid code block identifier: '${tempCodeBlockIdentifier}'`)
-    }))
-
-    new Setting(containerEl).setName('Reset values').setDesc('Reset everything to default.')
-    .addButton((button) => button
-    .setButtonText('Reset')
-    .setWarning() /* red color TODO #v1.13.0 change to .setDestructive() */
-    .onClick(async () => {
-      /* JS Hint: be aware that we can't just overwrite one with the other */
-      this.plugin.settings = Object.assign({}, DEFAULT_SETTINGS)
-      await this.plugin.saveSettings()
-      this.display()
-    }))
-
   }
 
   private addNumericSetting(container: HTMLElement, name: string, desc: string, key: keyof OriginalSmilesDrawerNumericSettings, isInteger: boolean) {
@@ -140,5 +200,4 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
       })
     )
   }
-
 }

@@ -1,7 +1,7 @@
 import {MarkdownView, Menu, Plugin} from 'obsidian'
 import SmilesDrawer from 'smiles-drawer'
 import SmilesDrawerSettingsTab from './settings-view'
-import {DEFAULT_SETTINGS, PluginSettings} from './settings'
+import {DEFAULT_SETTINGS, PluginSettings} from './definitions/settings'
 import {Popup} from './popup-util'
 
 /* To read: https://hunterheidenreich.com/notes/chemistry/molecular-representations/notations/smiles/ */
@@ -76,23 +76,22 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
 
     /* Create a clean container element for the SVG inside the note DOM */
     const container = el.createDiv({cls: 'obsidian-smiles-container'})
+    if (localSettings.backgroundColor) container.style.backgroundColor = localSettings.backgroundColor
+    container.style.height = `${(localSettings.height + 34 + 2 * localSettings.padding)}px`;
+    // container.style.overflow = 'hidden';
 
     /* Set up the target SVG element with responsive attributes */
     const svgEl = window.activeDocument.createElementNS('http://www.w3.org/2000/svg', 'svg')
-    svgEl.setAttrs({'width': localSettings.width, 'height': localSettings.height})
+    svgEl.setAttrs({'width': 'auto', 'height': localSettings.height})
 
     container.appendChild(svgEl)
 
     /* Initialize the SvgDrawer with styling options */
     const svgDrawer = new SmilesDrawer.SvgDrawer(localSettings)
 
-    /* Detect the current Obsidian theme to choose a color palette */
-    const isDarkMode: boolean = window.activeDocument.body.classList.contains('theme-dark')
-    const themeMode = isDarkMode ? 'dark' : 'light'
-
     /* External magic */
     SmilesDrawer.parse(smilesString, (tree): void => {
-      svgDrawer.draw(tree, svgEl, themeMode)
+      svgDrawer.draw(tree, svgEl, localSettings.theme)
     }, (error) => {
       container.setText(`SMILES Error: ${error.message}`)
       container.addClass('smiles-error-msg')

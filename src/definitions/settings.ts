@@ -1,14 +1,21 @@
-import {OriginalSmilesDrawerSettings} from 'smiles-drawer'
+import {OriginalSmilesDrawerSettings, ThemesType} from 'smiles-drawer'
 
 export interface PluginSettings extends OriginalSmilesDrawerSettings {
   codeBlockIdentifier: string
+  backgroundColor: string
+}
+
+function getDefaultTheme(): ThemesType {
+  const isDarkMode: boolean = window.activeDocument.body.classList.contains('theme-dark')
+  return isDarkMode ? 'dark' : 'light'
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
   /* My settings */
   codeBlockIdentifier: 'smiles',
+  backgroundColor: '',
   /* Original smiles-drawer settings:  */
-  width: 500,
+  width: 250,
   height: 150, /* OG was 500 */
   bondThickness: 1,
   bondLength: 30,
@@ -24,5 +31,6 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   overlapSensitivity: 0.42,
   overlapResolutionIterations: 1,
   compactDrawing: true,
-  isometric: true
+  isometric: true,
+  theme: getDefaultTheme()
 }
