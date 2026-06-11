@@ -1,0 +1,136 @@
+import {PluginSettings} from './definitions/settings'
+import {MarkdownView, Menu} from 'obsidian'
+import {Popup} from './popup-util'
+import SmilesDrawerToObsidianPlugin from './main'
+
+export class ContextMenuBuilder {
+  constructor(readonly plugin: SmilesDrawerToObsidianPlugin,
+              readonly container: HTMLDivElement,
+              readonly smilesString: string,
+              readonly svgEl: SVGSVGElement,
+              readonly settings: PluginSettings) {
+  }
+
+
+  build() {
+    this.container.addEventListener('contextmenu', (event: MouseEvent) => {
+      event.preventDefault() // prevents standard browser context menu TODO instead extend?
+
+      const menu = new Menu()
+      this.addCopySvgAsPngMenuItem(menu)
+      this.addCopySmilesNotationMenuItem(menu)
+      this.addEditCodeBlockMenuItem(menu)
+      menu.showAtPosition({x: event.clientX, y: event.clientY})
+    })
+  }
+
+  private addCopySvgAsPngMenuItem(menu: Menu) {
+    /* Context menu option 2: Copy SVG as PNG (as of version 0.3.0 ) */
+    menu.addItem((item) =>
+      item
+      .setTitle('Copy as image (PNG)')
+      .setIcon('copy')
+      .onClick(async () => {
+        try {
+          /* Get the raw XML string from your actual generated SVG element */
+          const svgData = new XMLSerializer().serializeToString(this.svgEl)
+
+          /* Create a hidden canvas element wrapper to convert vector to pixel raster data */
+          const canvas = window.activeDocument.createElement('canvas')
+          const ctx = canvas.getContext('2d')
+          if (!ctx) return
+
+          /* Standard boundaries based on your active dimensions */
+          canvas.width = this.settings.width
+          canvas.height = this.settings.height
+
+          /* Set up a modern blob image conversion pipeline */
+          const img = new window.Image()
+          const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'})
+          const url = URL.createObjectURL(svgBlob)
+
+          img.onload = () => {
+            ctx.drawImage(img, 0, 0)
+            URL.revokeObjectURL(url)
+
+            /* Extract standard PNG image blob from canvas cache data without a leaking promise */
+            canvas.toBlob((pngBlob) => {
+              if (!pngBlob) return
+              void copyImageToClipboard(pngBlob)
+            }, 'image/png')
+          }
+
+          img.src = url
+        } catch (err) {
+          Popup.nok('Copy failed', err)
+        }
+      })
+    )
+  }
+
+  private addCopySmilesNotationMenuItem(menu: Menu) {
+    menu.addItem((item) =>
+      item
+      .setTitle('Copy SMILES notation (text)')
+      .setIcon('copy')
+      .onClick(async () => {
+        void copyTextToClipboard(this.smilesString)
+      })
+    )
+  }
+
+  private addEditCodeBlockMenuItem(menu: Menu) {
+    /* Context menu option 1: Jump to Code Block & Pre-input parameter */
+    menu.addItem((item) => item
+      .setTitle('Edit layout height')
+      .setIcon('pencil')
+      .onClick(async () => {
+        const activeView = this.plugin.app.workspace.getActiveViewOfType(MarkdownView)
+        if (!activeView) return
+
+        const editor = activeView.editor
+        const totalLines = editor.lineCount()
+
+        for (let i = 0; i < totalLines; i++) {
+          const lineText = editor.getLine(i)
+
+          /* Look for matching SMILES notation */
+          if (lineText.trim() === this.smilesString) {
+            const targetLine = i + 1
+
+            editor.setCursor({line: targetLine, ch: 0})
+            editor.focus()
+
+            /* Insert a new config line directly below */
+            editor.replaceRange('height: \n', {line: targetLine, ch: 0})
+            editor.setCursor({line: targetLine, ch: 8})
+            break
+          }
+        }
+      })
+    )
+  }
+
+
+}
+
+async function copyTextToClipboard(text: string) {
+  try {
+    await window.navigator.clipboard.writeText(text)
+    Popup.ok(`Copied to clipboard:\n '${text}'`)
+  } catch (err) {
+    Popup.nok('Clipboard write failed', err)
+  }
+}
+
+
+async function copyImageToClipboard(pngBlob: Blob) {
+  try {
+    await window.navigator.clipboard.write([
+      new ClipboardItem({'image/png': pngBlob})
+    ])
+    Popup.ok('Image copied to clipboard.')
+  } catch (err) {
+    Popup.nok('Clipboard write failed', err)
+  }
+}
