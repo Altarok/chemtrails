@@ -1,7 +1,7 @@
 {
   "id": "chemtrails",
   "name": "Chemtrails",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "minAppVersion": "1.12.7",
   "description": "Renders SMILES chemical notations as crisp SVG diagrams.",
   "author": "Altarok",
