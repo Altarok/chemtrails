@@ -1,5 +1,9 @@
 import SmilesDrawerToObsidianPlugin from '../main'
 import {App, Modal} from 'obsidian'
+import {PluginSettings} from "../definitions/settings";
+import {Check} from "./preconditions";
+import {GenericModal} from "./generic-modal";
+import {MOLECULE_THEMES} from "../definitions/smiles-drawer-adapter";
 
 export class CodeBlockCreatorModal extends Modal {
 
@@ -11,23 +15,47 @@ export class CodeBlockCreatorModal extends Modal {
     const {contentEl} = this
     contentEl.empty()
 
-    console.log('open modal')
+    /*
+     * Abort if open file is not a .md not in reading view
+     */
+    if (!Check.isMarkdownFileInEditingView(this.plugin)) {
+      this.setTitle('[Chemtrails] Warning')
+      contentEl.setText("Can't open code block creator.")
+      contentEl.setText('Please open a markdown file in editing view.')
+      contentEl.setText('Then try again.')
+      return
+    }
+
+    this.setTitle('[Chemtrails] Code block creator')
+
+    /* Read global settings */
+    const globalSettings: PluginSettings = Object.assign({}, this.plugin.settings)
+    // let localSettings: Partial<PluginSettings> = {}
+
+    GenericModal.displayInitialDescription(contentEl,
+      'Use the global settings you want to overwrite specifically for this code block.'
+    )
+
+    GenericModal.displayOptionalOverwriteSettings(contentEl, {
+        name: 'theme',
+        description: "A molecule's display theme.",
+        current: globalSettings.theme,
+        input:
+          {
+            type: 'dropdown',
+            dropdownOptions: MOLECULE_THEMES
+          }
+      }
+    )
 
 
     // debugger
 
-    this.setTitle('a title')
-    //
-    // contentEl.createEl('h1', {text: 'a text'})
-    //
-    //
     // contentEl.setAttribute('tabindex', '-1')
     contentEl.focus()
   }
 
   onClose() {
-    // console.log('close modal')
-    // debugger
     this.contentEl.empty()
   }
 

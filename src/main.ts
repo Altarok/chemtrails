@@ -1,4 +1,4 @@
-import {Modal,Plugin} from 'obsidian'
+import { Platform, Plugin} from 'obsidian'
 import SmilesDrawer from 'smiles-drawer'
 import SmilesDrawerSettingsTab from './settings-view'
 import {DEFAULT_SETTINGS, PluginSettings} from './definitions/settings'
@@ -19,18 +19,21 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
 
     this.addSettingTab(new SmilesDrawerSettingsTab(this.app, this))
 
-    this.addRibbonIcon('lucide-atom', 'Chemtrails: Open code block generator', () => {
-      const m: Modal = new CodeBlockCreatorModal(this.app, this)
-      m.open()
-    });
+    if (!Platform.isMobile) {
 
-    this.addCommand({
-      id: 'chemtrails-open-code-block-manager',
-      name: 'Chemtrails: Open code block manager',
-      callback: () => {
-        new CodeBlockCreatorModal(this.app, this).open()
-      }
-    })
+      this.addRibbonIcon('lucide-atom', 'Chemtrails: Open code block creator', () => {
+        this.showCodeBlockCreator()
+      });
+
+      this.addCommand({
+        id: 'chemtrails-open-code-block-creator',
+        name: 'Chemtrails: Open code block creator',
+        callback: () => {
+          this.showCodeBlockCreator()
+        }
+      })
+
+    }
 
   }
 
@@ -118,4 +121,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
     new ContextMenuBuilder(this, container, smilesString, svgEl, localSettings).build()
   }
 
+  private showCodeBlockCreator() {
+    new CodeBlockCreatorModal(this.app, this).open()
+  }
 }

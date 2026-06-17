@@ -2,8 +2,10 @@ declare module 'smiles-drawer' {
 
   export type AtomVisualizationType = 'default' | 'balls' | 'none'
   export type ShowCarbonsType = 'none' | 'default' | 'terminal' | 'acyclic' | 'all'
-  export type ThemesType = 'dark' | 'light' | 'oldschool' | 'solarized' | 'solarized-dark' | 'matrix' | 'github' | 'carbon' | 'cyberpunk' | 'gruvbox' | 'gruvbox-dark' | 'custom'
 
+  export type ThemesType = 'dark' | 'light' | 'oldschool' | 'solarized' | 'solarized-dark' |
+    'matrix' | 'github' | 'carbon' | 'cyberpunk' | 'gruvbox' |
+    'gruvbox-dark' | 'custom'
 
   export interface OriginalSmilesDrawerNumericSettings {
     /* Drawing width (default: 500) */
