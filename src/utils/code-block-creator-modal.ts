@@ -2,7 +2,7 @@ import SmilesDrawerToObsidianPlugin from '../main'
 import {App, Modal} from 'obsidian'
 import {PluginSettings} from "../definitions/settings";
 import {Check} from "./preconditions";
-import {GenericModal} from "./generic-modal";
+import {GenericModal, OutputData} from "./generic-modal";
 import {ATOM_VISUALIZATION, MOLECULE_THEMES} from "../definitions/smiles-drawer-adapter";
 
 export class CodeBlockCreatorModal extends Modal {
@@ -30,49 +30,65 @@ export class CodeBlockCreatorModal extends Modal {
 
     /* Read global settings */
     const globalSettings: PluginSettings = Object.assign({}, this.plugin.settings)
-    const localSettings: Record<string, string> = {};
-    for (const key of Object.keys(globalSettings)) {
-      localSettings[key] = ''
-    }
+    const localSettings: Record<string, OutputData> = {};
+    localSettings['smiles'] = ''
+    for (const key of Object.keys(globalSettings)) localSettings[key] = undefined
 
-
-    GenericModal.display(contentEl,
+    new GenericModal(contentEl,
       {
-        description: 'Use the global settings you want to overwrite specifically for this code block.',
+        codeBlockId: 'smiles',
+        description: 'Select the global settings you want to overwrite for your code block.',
         overwriteSettings: [
           {
             type: 'main',
             name: 'smiles input',
+            key: 'smiles',
             explanation: 'This will apply a theme to your code block.',
-            mandatory: true,
-            current: ''
+            mandatory: true
           },
           {
             type: 'dropdown',
             name: 'theme',
+            key: 'theme',
             explanation: 'This will apply a theme to your code block.',
             current: globalSettings.theme,
             mandatory: false,
             dropdownOptions: MOLECULE_THEMES as readonly string[]
           },
           {
+            type: 'dropdown',
             name: 'atom visualization',
+            key: 'atomVisualization',
             explanation: 'Changes representation of single atoms.',
             current: globalSettings.atomVisualization,
             mandatory: false,
-            type: 'dropdown',
             dropdownOptions: ATOM_VISUALIZATION as readonly string[]
           },
           {
             type: 'color',
             name: 'background color',
+            key: 'backgroundColor',
             current: globalSettings.backgroundColor,
+            mandatory: false,
+          },
+          {
+            type: 'boolean',
+            name: 'show hydrogen atoms explicitly',
+            key: 'explicitHydrogens',
+            current: globalSettings.explicitHydrogens,
+            mandatory: false,
+          },
+          {
+            type: 'boolean',
+            name: 'compact drawing',
+            key: 'compactDrawing',
+            current: globalSettings.compactDrawing,
             mandatory: false,
           },
         ],
         output: localSettings
       }
-    )
+    ).display()
 
 
 
