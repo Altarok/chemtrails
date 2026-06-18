@@ -2,7 +2,7 @@ import SmilesDrawerToObsidianPlugin from '../main'
 import {App, Modal} from 'obsidian'
 import {PluginSettings} from '../definitions/settings'
 import {ATOM_VISUALIZATION, MOLECULE_THEMES, SHOW_CARBONS} from '../definitions/smiles-drawer-adapter'
-import {AnyInput, GenericModal, OutputData} from '@Altarok/obsidian-dev-utils/src'
+import {AnyInput, GenericModal, GenericModalInput, OutputData} from '@Altarok/obsidian-dev-utils/src'
 import SmilesDrawer from 'smiles-drawer'
 
 export class CodeBlockCreatorModal extends Modal {
@@ -20,8 +20,12 @@ export class CodeBlockCreatorModal extends Modal {
     localSettings['smiles'] = ''
     for (const key of Object.keys(globalSettings)) localSettings[key] = undefined
 
-    const mandatoryInput = createMandatoryInput();
-    const optionalInput = createOptionalInput(globalSettings);
+    const mandatoryInput:Readonly<AnyInput>[] = createMandatoryInput();
+    const optionalInput:Readonly<AnyInput>[] = createOptionalInput(globalSettings);
+
+
+    // const combinedInput:GenericModalInput =
+
 
     new GenericModal(contentEl,
       {
@@ -85,7 +89,7 @@ export class CodeBlockCreatorModal extends Modal {
           });
 
         }
-      }
+      } as GenericModalInput
     ).display()
 
     contentEl.focus()
