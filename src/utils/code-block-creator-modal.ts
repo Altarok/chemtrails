@@ -20,12 +20,8 @@ export class CodeBlockCreatorModal extends Modal {
     localSettings['smiles'] = ''
     for (const key of Object.keys(globalSettings)) localSettings[key] = undefined
 
-    const mandatoryInput:Readonly<AnyInput>[] = createMandatoryInput();
-    const optionalInput:Readonly<AnyInput>[] = createOptionalInput(globalSettings);
-
-
-    // const combinedInput:GenericModalInput =
-
+    const mandatoryInput: Readonly<AnyInput>[] = createMandatoryInput();
+    const optionalInput: Readonly<AnyInput>[] = createOptionalInput(globalSettings);
 
     new GenericModal(contentEl,
       {
@@ -35,13 +31,13 @@ export class CodeBlockCreatorModal extends Modal {
         output: localSettings,
         createCodeBlock: () => {
           let code = ''
-          /* add main options */
+          /* add main smiles notation */
           if (localSettings.smiles) code += `${localSettings.smiles}\n`
 
           /* add other options */
           const settings: AnyInput[] = optionalInput.filter(
             (setting): setting is AnyInput => !!setting && 'key' in setting)
-          .map(setting => setting)
+            .map(setting => setting)
 
           for (const setting of settings) {
             if (!setting) continue
