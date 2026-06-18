@@ -5,6 +5,7 @@ import {ATOM_VISUALIZATION, MOLECULE_THEMES, SHOW_CARBONS} from '../definitions/
 import {AnyInput, GenericModal, OutputData} from '@Altarok/obsidian-dev-utils/src'
 import SmilesDrawer from 'smiles-drawer'
 
+// npm update @Altarok/obsidian-dev-utils
 export class CodeBlockCreatorModal extends Modal {
   constructor(public readonly app: App, public readonly plugin: SmilesDrawerToObsidianPlugin) {
     super(app)
@@ -91,7 +92,7 @@ export class CodeBlockCreatorModal extends Modal {
     contentEl.focus()
   }
 
-  private createOverwriteSettings(globalSettings: PluginSettings, localSettings: Record<string, string | boolean | undefined>) {
+  private createOverwriteSettings(globalSettings: PluginSettings, localSettings: Record<string, string | boolean | number | undefined>) {
     const overwriteSettings: PluginSettings = Object.assign({}, globalSettings);
 
     for (const [key, value] of Object.entries(localSettings)) {
