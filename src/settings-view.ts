@@ -109,7 +109,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
     }))
 
     new Setting(containerEl).setName('Show hydrogen atoms').setDesc('Show explicit hydrogen atoms (default: true)')
-    .addToggle((toggle) => toggle.setValue(this.plugin.settings.explicitHydrogens).onChange(async (value) => {
+    .addToggle(tc => tc.setValue(this.plugin.settings.explicitHydrogens).onChange(async (value) => {
       this.plugin.settings.explicitHydrogens = value
       await this.plugin.saveSettings()
     }))
@@ -119,13 +119,13 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
     this.addNumericSetting(containerEl, 'Overlap resolution iterations', 'Amount of overlap resolution iterations.', 'overlapResolutionIterations', true)
 
     new Setting(containerEl).setName('Compact drawing').setDesc('Draw concatenated terminals and pseudo elements. (default: true)')
-    .addToggle(toggle => toggle.setValue(this.plugin.settings.compactDrawing).onChange(async (value) => {
+    .addToggle(tc => tc.setValue(this.plugin.settings.compactDrawing).onChange(async (value) => {
       this.plugin.settings.compactDrawing = value
       await this.plugin.saveSettings()
     }))
 
     new Setting(containerEl).setName('Isometric').setDesc('Draw isometric SMILES if available (default: true)')
-    .addToggle((toggle: ToggleCompoenent) => toggle.setValue(this.plugin.settings.isometric).onChange(async (value) => {
+    .addToggle(tc => tc.setValue(this.plugin.settings.isometric).onChange(async (value) => {
       this.plugin.settings.isometric = value
       await this.plugin.saveSettings()
     }))

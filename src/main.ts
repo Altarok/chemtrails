@@ -32,9 +32,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
           this.showCodeBlockCreator()
         }
       })
-
     }
-
   }
 
   async loadSettings() {
