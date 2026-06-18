@@ -89,7 +89,7 @@ export class CodeBlockCreatorModal extends Modal {
           });
 
         }
-      } as GenericModalInput
+      }
     ).display()
 
     contentEl.focus()
