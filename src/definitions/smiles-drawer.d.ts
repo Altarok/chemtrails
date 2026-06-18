@@ -63,7 +63,6 @@ declare module 'smiles-drawer' {
 
   class SvgDrawer {
     constructor(options: Partial<OriginalSmilesDrawerSettings>)
-
     draw(
       tree: MoleculeTree,
       target: SVGElement | string,
