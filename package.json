@@ -17,7 +17,6 @@
     "lint:css": "stylelint \"styles.css\""
   },
   "devDependencies": {
-    "@Altarok/obsidian-dev-utils": "github:Altarok/obsidian-dev-utils#main",
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.0.0",
     "@typescript-eslint/eslint-plugin": "^8.61.0",
@@ -31,6 +30,9 @@
     "stylelint-config-standard": "^40.0.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.60.1"
+  },
+  "dependencies": {
+    "@Altarok/obsidian-dev-utils": "git+https://github.com/Altarok/obsidian-dev-utils.git#main"
   },
   "allowScripts": {
     "esbuild@0.28.1": true
