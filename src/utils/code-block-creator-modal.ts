@@ -31,7 +31,7 @@ export class CodeBlockCreatorModal extends Modal {
       if (localSettings.smiles) code += `${localSettings.smiles}\n`
 
       /* add other options */
-      const settings: AnyInput[] = []
+      const settings: MandatoryInput[] = []
 
       const addToSettings = (o: OptionalInput): void => {
 
@@ -151,7 +151,7 @@ function createMandatoryInput(): Readonly<MandatoryInput>[] {
 function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly<OptionalInput>[] {
   return [
     {
-      type: 'expandable', key: '-', prompt: 'Show design options',
+      type: 'expandable', prompt: 'Show design options',
       nestedInput: [
         {
           type: 'dropdown',
@@ -167,7 +167,7 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
       ]
     },
     {
-      type: 'expandable', key: '-', prompt: 'Show atom options',
+      type: 'expandable', prompt: 'Show atom options',
       nestedInput: [
         {
           type: 'dropdown', prompt: 'Select which carbons to show.', key: 'showCarbons',
@@ -194,7 +194,7 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
     // },
 
     {
-      type: 'expandable', name: 'boolean flags', key: '-', prompt: 'Show boolean flags',
+      type: 'expandable', prompt: 'Show boolean flags',
       nestedInput: [
         {
           type: 'boolean', prompt: 'compact drawing', key: 'compactDrawing',
@@ -205,7 +205,7 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
     },
 
     {
-      type: 'expandable', key: '-', prompt: 'Show numeric values',
+      type: 'expandable', prompt: 'Show numeric values',
       nestedInput: [
         {
           type: 'slider', prompt: 'Change padding.', key: 'padding',
