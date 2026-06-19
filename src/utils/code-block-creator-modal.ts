@@ -2,7 +2,7 @@ import SmilesDrawerToObsidianPlugin from '../main'
 import {App, Modal} from 'obsidian'
 import {PluginSettings} from '../definitions/settings'
 import {MOLECULE_THEMES, SHOW_CARBONS} from '../definitions/smiles-drawer-adapter'
-import {AnyInput, GenericModal, MandatoryInput, OptionalInput, OutputData} from '@Altarok/obsidian-dev-utils/src'
+import {GenericModal, MandatoryInput, OptionalInput, OutputData} from '@Altarok/obsidian-dev-utils/src'
 import SmilesDrawer from 'smiles-drawer'
 
 // npm update @Altarok/obsidian-dev-utils
