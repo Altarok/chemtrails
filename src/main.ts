@@ -1,4 +1,4 @@
-import { Platform, Plugin} from 'obsidian'
+import {Plugin} from 'obsidian'
 import SmilesDrawer from 'smiles-drawer'
 import SmilesDrawerSettingsTab from './settings-view'
 import {DEFAULT_SETTINGS, PluginSettings} from './definitions/settings'
@@ -19,20 +19,18 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
 
     this.addSettingTab(new SmilesDrawerSettingsTab(this.app, this))
 
-    if (!Platform.isMobile) {
+    // if (!Platform.isMobile) {
 
-      this.addRibbonIcon('lucide-atom', 'Chemtrails: Open code block creator', () => {
-        this.showCodeBlockCreator()
-      });
+    this.addRibbonIcon('lucide-atom', 'Chemtrails: Open code block creator', () => {
+      this.showCodeBlockCreator()
+    });
 
-      this.addCommand({
-        id: 'chemtrails-open-code-block-creator',
-        name: 'Chemtrails: Open code block creator',
-        callback: () => {
-          this.showCodeBlockCreator()
-        }
-      })
-    }
+    this.addCommand({
+      id: 'chemtrails-open-code-block-creator',
+      name: 'Chemtrails: Open code block creator',
+      callback: () => this.showCodeBlockCreator()
+    })
+    // }
   }
 
   async loadSettings() {

@@ -1,7 +1,7 @@
 import SmilesDrawerToObsidianPlugin from '../main'
 import {App, Modal} from 'obsidian'
 import {PluginSettings} from '../definitions/settings'
-import {ATOM_VISUALIZATION, MOLECULE_THEMES, SHOW_CARBONS} from '../definitions/smiles-drawer-adapter'
+import {MOLECULE_THEMES, SHOW_CARBONS} from '../definitions/smiles-drawer-adapter'
 import {AnyInput, GenericModal, MandatoryInput, OptionalInput, OutputData} from '@Altarok/obsidian-dev-utils/src'
 import SmilesDrawer from 'smiles-drawer'
 
@@ -36,7 +36,7 @@ export class CodeBlockCreatorModal extends Modal {
       const addToSettings = (o: OptionalInput): void => {
 
         if (o.type === 'expandable') {
-          o.nestedInput.forEach( (o2: OptionalInput)=>
+          o.nestedInput.forEach((o2: OptionalInput) =>
             addToSettings(o2)
           )
           return
@@ -47,7 +47,7 @@ export class CodeBlockCreatorModal extends Modal {
         }
       }
 
-      optionalInput.forEach( (o: OptionalInput)=>
+      optionalInput.forEach((o: OptionalInput) =>
         addToSettings(o)
       )
       // optionalInput.forEach((o: OptionalInput)=>{
@@ -140,7 +140,7 @@ function createMandatoryInput(): Readonly<MandatoryInput>[] {
   return [
     {
       type: 'string',
-      name: 'smiles input',
+      prompt: 'Please input SMILES notation.',
       key: 'smiles',
       current: '',
       tooltip: 'This will apply a theme to your code block.'
@@ -151,21 +151,39 @@ function createMandatoryInput(): Readonly<MandatoryInput>[] {
 function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly<OptionalInput>[] {
   return [
     {
-      type: 'dropdown',
-      name: 'theme',
-      key: 'theme',
-      tooltip: 'This will apply a theme to your code block.',
-      current: globalSettings.theme,
-      dropdownOptions: MOLECULE_THEMES as readonly string[]
+      type: 'expandable', key: '-', prompt: 'Show design options',
+      nestedInput: [
+        {
+          type: 'dropdown',
+          prompt: 'Select theme.',
+          key: 'theme',
+          tooltip: 'This will apply a theme to your code block.',
+          current: globalSettings.theme,
+          dropdownOptions: MOLECULE_THEMES as readonly string[]
+        },
+        {
+          type: 'color', prompt: 'Change background color.', key: 'backgroundColor', current: globalSettings.backgroundColor,
+        },
+      ]
     },
-    // {
-    //   type: 'dropdown',
-    //   name: 'show carbons',
-    //   key: 'showCarbons',
-    //   tooltip: 'Show or hide carbon atoms.',
-    //   current: globalSettings.showCarbons,
-    //   dropdownOptions: SHOW_CARBONS as readonly string[]
-    // },
+    {
+      type: 'expandable', key: '-', prompt: 'Show atom options',
+      nestedInput: [
+        {
+          type: 'dropdown', prompt: 'Select which carbons to show.', key: 'showCarbons',
+          tooltip: 'Select which carbon atoms to show',
+          current: globalSettings.showCarbons,
+          dropdownOptions: SHOW_CARBONS as readonly string[]
+        },
+        {
+          type: 'boolean', prompt: 'Show hydrogen atoms explicitly.',
+          tooltip: 'Show hydrogen atoms explicitly',
+          key: 'explicitHydrogens', current: globalSettings.explicitHydrogens,
+        },
+      ]
+    },
+
+
     // {
     //   type: 'dropdown',
     //   name: 'atom visualization',
@@ -174,49 +192,32 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
     //   current: globalSettings.atomVisualization,
     //   dropdownOptions: ATOM_VISUALIZATION as readonly string[]
     // },
-    // {
-    //   type: 'color',
-    //   name: 'background color',
-    //   key: 'backgroundColor',
-    //   current: globalSettings.backgroundColor,
-    // },
-    // {
-    //   type: 'boolean',
-    //   name: 'show hydrogen atoms explicitly',
-    //   key: 'explicitHydrogens',
-    //   current: globalSettings.explicitHydrogens,
-    // },
+
     {
-      type: 'boolean',
-      name: 'compact drawing',
-      key: 'compactDrawing',
-      current: globalSettings.compactDrawing,
-    },
-    {
-      type: 'expandable',
-      name: 'numeric values',
-      key: 'none',
-      prompt: 'Modify numeric values?',
+      type: 'expandable', name: 'boolean flags', key: '-', prompt: 'Show boolean flags',
       nestedInput: [
         {
-          type: 'slider',
-          name: 'padding',
-          key: 'padding',
-          from: 0, to: 50, step: 5,
-          current: globalSettings.padding,
+          type: 'boolean', prompt: 'compact drawing', key: 'compactDrawing',
+          tooltip: 'Shortens some molecules',
+          current: globalSettings.compactDrawing,
+        },
+      ]
+    },
+
+    {
+      type: 'expandable', key: '-', prompt: 'Show numeric values',
+      nestedInput: [
+        {
+          type: 'slider', prompt: 'Change padding.', key: 'padding',
+          from: 0, to: 50, step: 5, current: globalSettings.padding,
         },
         {
-          type: 'slider',
-          name: 'font size small',
-          key: 'fontSizeSmall',
-          from: 2, to: 10, step: 1,
-          current: globalSettings.fontSizeSmall,
+          type: 'slider', prompt: 'Change atom font size.', key: 'fontSizeLarge',
+          from: 5, to: 20, step: 1, current: globalSettings.fontSizeLarge,
         },
         {
-          type: 'boolean',
-          name: 'show hydrogen atoms explicitly',
-          key: 'explicitHydrogens',
-          current: globalSettings.explicitHydrogens,
+          type: 'slider', prompt: 'Change counter font size .', key: 'fontSizeSmall',
+          from: 2, to: 10, step: 1, current: globalSettings.fontSizeSmall,
         },
       ]
     },
