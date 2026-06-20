@@ -76,6 +76,7 @@ export class CodeBlockCreatorModal extends Modal {
     }
     const onUpdatePreview = (previewEl: HTMLElement): void => {
       previewEl.empty()
+
       const smilesString: string = localSettings.smiles as string
 
       if (!smilesString) {
@@ -97,6 +98,9 @@ export class CodeBlockCreatorModal extends Modal {
       }, (error: Error) => {
         previewEl.setText(`SMILES Error: ${error.message}`)
       })
+
+      if (
+        overwriteSettings.backgroundColor !== undefined && overwriteSettings.backgroundColor !== 'none' ) svgElement.style.backgroundColor = overwriteSettings.backgroundColor
 
     }
 
@@ -162,7 +166,8 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
           dropdownOptions: MOLECULE_THEMES as readonly string[]
         },
         {
-          type: 'color', prompt: 'Change background color.', key: 'backgroundColor', current: globalSettings.backgroundColor,
+          type: 'color', prompt: 'Change background color.', key: 'backgroundColor',
+          current: globalSettings.backgroundColor,
         },
       ]
     },
