@@ -17,67 +17,49 @@ export class CodeBlockCreatorModal extends Modal {
 
     /* Copy global settings */
     const globalSettings: Readonly<PluginSettings> = Object.assign({}, this.plugin.settings)
-    const localSettings: Record<string, OutputData> = {};
-    localSettings['smiles'] = ''
-    for (const key of Object.keys(globalSettings)) localSettings[key] = undefined
+    const output: Record<string, OutputData> = {};
+    output['smiles'] = ''
+    for (const key of Object.keys(globalSettings)) output[key] = undefined
 
     const mandatoryInput: Readonly<MandatoryInput>[] = createMandatoryInput()
     const optionalInput: Readonly<OptionalInput>[] = createOptionalInput(globalSettings)
 
-    const createCodeBlock = (): string => {
-
-      let code = ''
-      /* add main smiles notation */
-      if (localSettings.smiles) code += `${localSettings.smiles}\n`
-
-      /* add other options */
-      const settings: MandatoryInput[] = []
-
-      const addToSettings = (o: OptionalInput): void => {
-
-        if (o.type === 'expandable') {
-          o.nestedInput.forEach((o2: OptionalInput) =>
-            addToSettings(o2)
-          )
-          return
-        }
-
-        if (!!o && 'key' in o) {
-          settings.push(o)
-        }
-      }
-
-      optionalInput.forEach((o: OptionalInput) =>
-        addToSettings(o)
-      )
-      // optionalInput.forEach((o: OptionalInput)=>{
-      //   if (setting is AnyInput => !!setting && 'key' in setting) {
-      //
-      //   }
-      // })
-      //   optionalInput.filter(
-      //   (setting): setting is AnyInput => !!setting && 'key' in setting)
-      // .map(setting => setting)
-
-      for (const setting of settings) {
-        if (!setting) continue
-
-        const localValue = localSettings[setting.key]
-        if (localValue === undefined || localValue === '') continue
-
-        const key: string = setting.key
-        const globalValue = setting.current
-        if (globalValue === localValue) continue
-
-        code += `${key}: ${localValue}\n`
-      }
-
-      return `\`\`\`smiles\n${code}\`\`\``
-    }
+    // const createCodeBlock = (): string => {
+    //   if (!output.smiles) return ''
+    //   let code = `${output.smiles}\n`
+    //
+    //   const settings: MandatoryInput[] = []
+    //
+    //   const addToSettings = (o: OptionalInput): void => {
+    //     if (o.type === 'expandable')
+    //       o.nestedInput.forEach((o2: OptionalInput) => addToSettings(o2))
+    //     else if (!!o && 'key' in o)
+    //       settings.push(o)
+    //   }
+    //
+    //   optionalInput.forEach((o: OptionalInput) =>
+    //     addToSettings(o)
+    //   )
+    //
+    //   for (const setting of settings) {
+    //     if (!setting) continue
+    //
+    //     const localValue = output[setting.key]
+    //     if (localValue === undefined || localValue === '') continue
+    //
+    //     const key: string = setting.key
+    //     const globalValue = setting.current
+    //     if (globalValue === localValue) continue
+    //
+    //     code += `${key}: ${localValue}\n`
+    //   }
+    //
+    //   return `\`\`\`smiles\n${code}\`\`\``
+    // }
     const onUpdatePreview = (previewEl: HTMLElement): void => {
       previewEl.empty()
 
-      const smilesString: string = localSettings.smiles as string
+      const smilesString: string = output.smiles as string
 
       if (!smilesString) {
         previewEl.setText("Enter a SMILES configuration above to generate preview...")
@@ -89,7 +71,7 @@ export class CodeBlockCreatorModal extends Modal {
       svgElement.setAttribute('max-width', '300')
       svgElement.setAttribute('max-height', '200')
 
-      const overwriteSettings = this.createOverwriteSettings(globalSettings, localSettings)
+      const overwriteSettings = this.createOverwriteSettings(globalSettings, output)
 
       const svgDrawer = new SmilesDrawer.SvgDrawer(overwriteSettings)
 
@@ -100,17 +82,18 @@ export class CodeBlockCreatorModal extends Modal {
       })
 
       if (
-        overwriteSettings.backgroundColor !== undefined && overwriteSettings.backgroundColor !== 'none' ) svgElement.style.backgroundColor = overwriteSettings.backgroundColor
+        overwriteSettings.backgroundColor !== undefined && overwriteSettings.backgroundColor !== 'none') svgElement.style.backgroundColor = overwriteSettings.backgroundColor
 
     }
 
     new GenericModal(contentEl,
       {
         pluginName: 'Chemtrails',
+        codeBlockId: globalSettings.codeBlockIdentifier,
         mandatory: mandatoryInput,
         optional: optionalInput,
-        output: localSettings,
-        createCodeBlock,
+        output: output,
+        // createCodeBlock,
         onUpdatePreview
       }
     ).display()
