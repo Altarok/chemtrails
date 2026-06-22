@@ -134,16 +134,14 @@ export class CodeBlockCreatorModal extends Modal {
 
 
 function createMandatoryInput(): Readonly<MandatoryInput>[] {
-  return [
-    {
-      type: 'string',
-      prompt: 'Please input SMILES notation.',
-      key: 'smiles',
-      codeBlockKey: '',
-      current: '',
-      tooltip: 'This will apply a theme to your code block.'
-    }
-  ]
+  return [{
+    type: 'string',
+    prompt: 'Please input SMILES notation.',
+    key: 'smiles',
+    codeBlockKey: '',
+    current: '',
+    tooltip: 'This will apply a theme to your code block.'
+  }]
 }
 
 function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly<OptionalInput>[] {
