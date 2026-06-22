@@ -25,6 +25,7 @@ jobs:
 
       - name: Build plugin
         run: |
+          npm install obsidian-dev-utils@git+https://github.com/Altarok/obsidian-dev-utils.git --no-save
           npm ci
           npm run build
 
