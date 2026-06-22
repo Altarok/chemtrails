@@ -19,18 +19,17 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
 
     this.addSettingTab(new SmilesDrawerSettingsTab(this.app, this))
 
-    // if (!Platform.isMobile) {
 
     this.addRibbonIcon('lucide-atom', 'Chemtrails: Open code block creator', () => {
       this.showCodeBlockCreator()
-    });
+    })
 
     this.addCommand({
-      id: 'chemtrails-open-code-block-creator',
-      name: 'Chemtrails: Open code block creator',
+      id: 'open-code-block-creator',
+      name: 'Open code block creator',
       callback: () => this.showCodeBlockCreator()
     })
-    // }
+
   }
 
   async loadSettings() {

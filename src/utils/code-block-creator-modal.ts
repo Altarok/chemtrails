@@ -71,18 +71,17 @@ export class CodeBlockCreatorModal extends Modal {
       svgElement.setAttribute('max-width', '300')
       svgElement.setAttribute('max-height', '200')
 
-      const overwriteSettings = this.createOverwriteSettings(globalSettings, output)
+      const overwriteSettings = this.mergeSettings(globalSettings, output)
 
       const svgDrawer = new SmilesDrawer.SvgDrawer(overwriteSettings)
 
-      SmilesDrawer.parse(smilesString, (tree): void => {
-        svgDrawer.draw(tree, svgElement, overwriteSettings.theme)
-      }, (error: Error) => {
-        previewEl.setText(`SMILES Error: ${error.message}`)
-      })
+      SmilesDrawer.parse(smilesString,
+        (tree): void => svgDrawer.draw(tree, svgElement, overwriteSettings.theme),
+        (error: Error) => previewEl.setText(`SMILES Error: ${error.message}`)
+      )
 
-      if (
-        overwriteSettings.backgroundColor !== undefined && overwriteSettings.backgroundColor !== 'none') svgElement.style.backgroundColor = overwriteSettings.backgroundColor
+      if (overwriteSettings.backgroundColor !== undefined && overwriteSettings.backgroundColor !== 'none')
+        svgElement.style.backgroundColor = overwriteSettings.backgroundColor
 
     }
 
@@ -101,19 +100,30 @@ export class CodeBlockCreatorModal extends Modal {
     contentEl.focus()
   }
 
-  private createOverwriteSettings(globalSettings: PluginSettings, localSettings: Record<string, string | boolean | number | undefined>) {
-    const overwriteSettings: PluginSettings = Object.assign({}, globalSettings);
+  /**
+   * @param globalSettings - global plugin settings
+   * @param localSettings - subset of plugin settings user chose to overwrite with code block creator
+   */
+  private mergeSettings(globalSettings: Readonly<PluginSettings>, localSettings: Record<string, string | boolean | number | undefined>) {
+    const mergedSettings: PluginSettings = Object.assign({}, globalSettings)
 
-    for (const [key, value] of Object.entries(localSettings)) {
-      if (key in overwriteSettings) {
-        const typedKey = key as keyof PluginSettings;
-        if (value !== undefined && value !== overwriteSettings[typedKey] && typeof value === typeof overwriteSettings[typedKey]) {
-          (overwriteSettings as Record<string, any>)[typedKey] = value;
-        }
+    const setSettingProperty = <K extends keyof PluginSettings>(key: K, val: PluginSettings[K]) => {
+      /* AI written helper method for type compliance */
+      mergedSettings[key] = val
+    }
+
+    for (const key of Object.keys(globalSettings) as Array<keyof PluginSettings>) {
+      const localValue = localSettings[key]
+      if (localValue === undefined) continue
+
+      const globalValue = globalSettings[key]
+
+      if (globalValue !== localValue && typeof globalValue === typeof localValue) {
+        setSettingProperty(key, localValue as PluginSettings[typeof key])
       }
     }
 
-    return overwriteSettings;
+    return mergedSettings;
   }
 
   onClose() {
@@ -169,8 +179,7 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
           dropdownOptions: SHOW_CARBONS as readonly string[]
         },
         {
-          type: 'boolean', prompt: 'Show hydrogen atoms explicitly.', key: 'explicitHydrogens',
-          // tooltip: 'Show hydrogen atoms explicitly',
+          type: 'boolean', prompt: 'Show explicit hydrogen atoms.', key: 'explicitHydrogens',
           current: globalSettings.explicitHydrogens,
         },
       ]
@@ -228,11 +237,11 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
         },
         {
           type: 'slider', prompt: 'Change width.', key: 'width',
-          from: 100, to: 1000, step: 10, current: globalSettings.width,
+          from: 50, to: 1000, step: 10, current: globalSettings.width,
         },
         {
           type: 'slider', prompt: 'Change height.', key: 'height',
-          from: 100, to: 1000, step: 10, current: globalSettings.height,
+          from: 50, to: 1000, step: 10, current: globalSettings.height,
         },
       ]
     },
