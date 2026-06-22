@@ -245,3 +245,4 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
     },
   ]
 }
+
