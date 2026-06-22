@@ -20,6 +20,10 @@ jobs:
               with:
                   node-version: "24"
                   cache: "npm"
+
+            - name: Inject Remote Util Dependency
+              run: npm install obsidian-dev-utils@git+https://github.com/Altarok/obsidian-dev-utils.git --no-save
+
             - run: npm ci
             - run: npm run build --if-present
             - run: npm run lint
