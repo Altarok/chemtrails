@@ -226,6 +226,14 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
           type: 'slider', prompt: 'Change bond spacing.', key: 'bondSpacing',
           from: 1, to: 10, step: 0.1, current: globalSettings.bondSpacing,
         },
+        {
+          type: 'slider', prompt: 'Change width.', key: 'width',
+          from: 100, to: 1000, step: 10, current: globalSettings.width,
+        },
+        {
+          type: 'slider', prompt: 'Change height.', key: 'height',
+          from: 100, to: 1000, step: 10, current: globalSettings.height,
+        },
       ]
     },
   ]
