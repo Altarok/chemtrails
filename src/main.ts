@@ -92,7 +92,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
     const cssStyleDisplay = localSettings.containerWidthMax ? 'flex' : 'inline-flex'
 
     /* Create a clean container element for the SVG inside the note DOM */
-    const container = el.createDiv({cls: 'obsidian-smiles-container'})
+    const container = el.createDiv({cls: 'chemtrails-smiles-container'})
     if (localSettings.backgroundColor) container.style.backgroundColor = localSettings.backgroundColor
     container.style.height = `${(localSettings.height + 2)}px` /* add 2 for border */
     container.style.display = cssStyleDisplay
@@ -111,7 +111,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
       svgDrawer.draw(tree, svgEl, localSettings.theme)
     }, (error) => {
       container.setText(`SMILES Error: ${error.message}`)
-      container.addClass('smiles-error-msg')
+      container.addClass('chemtrails-smiles-error-msg')
     })
 
     new ContextMenuBuilder(this, container, smilesString, svgEl, localSettings).build()

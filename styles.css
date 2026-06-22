@@ -1,15 +1,28 @@
+/* 
+.chemtrails-rubik-cube-algs-cube-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  transform-origin: center;
+  transition: transform 0.5s ease-in-out;
+} */
+
+
 /* Container layout for the chemical drawing */
-.obsidian-smiles-container {
+.chemtrails-smiles-container {
   background-color: var(--background-secondary);
   overflow: hidden;
   justify-content: center;
   align-items: center;
   margin: 0;
   padding: 0;
+  transition: transform 0.5s ease-in-out;
 }
 
 /* Ensure the SVG scales responsively inside the code block area */
-.obsidian-smiles-container svg {
+.chemtrails-smiles-container svg {
   width: 100%;
   height: 100%;
   display: block;
@@ -17,7 +30,7 @@
 }
 
 /* Error message formatting for broken SMILES syntax */
-.smiles-error-msg {
+.chemtrails-smiles-error-msg {
   color: var(--text-error);
   font-family: var(--font-monospace);
   font-size: var(--font-small);

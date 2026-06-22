@@ -1,7 +1,7 @@
 import SmilesDrawerToObsidianPlugin from '../main'
 import {App, Modal} from 'obsidian'
 import {PluginSettings} from '../definitions/settings'
-import {MOLECULE_THEMES, SHOW_CARBONS} from '../definitions/smiles-drawer-adapter'
+import {ATOM_VISUALIZATION, MOLECULE_THEMES, SHOW_CARBONS} from '../definitions/smiles-drawer-adapter'
 import {GenericModal, MandatoryInput, OptionalInput, OutputData} from '@Altarok/obsidian-dev-utils/src'
 import SmilesDrawer from 'smiles-drawer'
 
@@ -129,6 +129,7 @@ function createMandatoryInput(): Readonly<MandatoryInput>[] {
       type: 'string',
       prompt: 'Please input SMILES notation.',
       key: 'smiles',
+      codeBlockKey: '',
       current: '',
       tooltip: 'This will apply a theme to your code block.'
     }
@@ -138,13 +139,11 @@ function createMandatoryInput(): Readonly<MandatoryInput>[] {
 function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly<OptionalInput>[] {
   return [
     {
-      type: 'expandable', prompt: 'Show design options',
+      type: 'expandable', prompt: 'Colors and Themes',
       nestedInput: [
         {
-          type: 'dropdown',
-          prompt: 'Select theme.',
-          key: 'theme',
-          tooltip: 'This will apply a theme to your code block.',
+          type: 'dropdown', prompt: 'Select theme.', key: 'theme',
+          tooltip: 'This will apply a theme to your molecule.',
           current: globalSettings.theme,
           dropdownOptions: MOLECULE_THEMES as readonly string[]
         },
@@ -158,42 +157,44 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
       type: 'expandable', prompt: 'Show atom options',
       nestedInput: [
         {
+          type: 'dropdown', prompt: 'How to visualize atoms', key: 'atomVisualization',
+          tooltip: 'Changes of single atoms from letters to circles or hies them entirely.',
+          current: globalSettings.atomVisualization,
+          dropdownOptions: ATOM_VISUALIZATION as readonly string[]
+        },
+        {
           type: 'dropdown', prompt: 'Select which carbons to show.', key: 'showCarbons',
-          tooltip: 'Select which carbon atoms to show',
+          tooltip: 'Select which carbon atoms to show.',
           current: globalSettings.showCarbons,
           dropdownOptions: SHOW_CARBONS as readonly string[]
         },
         {
-          type: 'boolean', prompt: 'Show hydrogen atoms explicitly.',
-          tooltip: 'Show hydrogen atoms explicitly',
-          key: 'explicitHydrogens', current: globalSettings.explicitHydrogens,
+          type: 'boolean', prompt: 'Show hydrogen atoms explicitly.', key: 'explicitHydrogens',
+          // tooltip: 'Show hydrogen atoms explicitly',
+          current: globalSettings.explicitHydrogens,
         },
       ]
     },
-
-
-    // {
-    //   type: 'dropdown',
-    //   name: 'atom visualization',
-    //   key: 'atomVisualization',
-    //   tooltip: 'Changes representation of single atoms.',
-    //   current: globalSettings.atomVisualization,
-    //   dropdownOptions: ATOM_VISUALIZATION as readonly string[]
-    // },
-
     {
-      type: 'expandable', prompt: 'Show boolean flags',
+      type: 'expandable', prompt: 'Boolean flags',
       nestedInput: [
         {
-          type: 'boolean', prompt: 'compact drawing', key: 'compactDrawing',
+          type: 'boolean', prompt: 'Compact drawing?', key: 'compactDrawing',
           tooltip: 'Shortens some molecules',
           current: globalSettings.compactDrawing,
         },
+        {
+          type: 'boolean', prompt: 'Isometric drawing?', key: 'isometric',
+          current: globalSettings.isometric,
+        },
+        {
+          type: 'boolean', prompt: 'Max container width?', key: 'containerWidthMax',
+          current: globalSettings.containerWidthMax,
+        }
       ]
     },
-
     {
-      type: 'expandable', prompt: 'Show numeric values',
+      type: 'expandable', prompt: 'Advanced',
       nestedInput: [
         {
           type: 'slider', prompt: 'Change padding.', key: 'padding',
@@ -204,8 +205,26 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
           from: 5, to: 20, step: 1, current: globalSettings.fontSizeLarge,
         },
         {
-          type: 'slider', prompt: 'Change counter font size .', key: 'fontSizeSmall',
+          type: 'slider', prompt: 'Change counter font size.', key: 'fontSizeSmall',
           from: 2, to: 10, step: 1, current: globalSettings.fontSizeSmall,
+        },
+        {
+          type: 'slider', prompt: 'Change bond thickness.', key: 'bondThickness',
+          from: 0.5, to: 3, step: 0.1, current: globalSettings.bondThickness,
+        },
+        {
+          type: 'slider', prompt: 'Change bond length.', key: 'bondLength',
+          tooltip: 'Distance between atoms.',
+          from: 5, to: 100, step: 5, current: globalSettings.bondLength,
+        },
+        {
+          type: 'slider', prompt: 'Change short bond length.', key: 'shortBondLength',
+          tooltip: 'This is the length of relative to the normal bond length.',
+          from: 0.5, to: 1, step: 0.1, current: globalSettings.shortBondLength,
+        },
+        {
+          type: 'slider', prompt: 'Change bond spacing.', key: 'bondSpacing',
+          from: 1, to: 10, step: 0.1, current: globalSettings.bondSpacing,
         },
       ]
     },
