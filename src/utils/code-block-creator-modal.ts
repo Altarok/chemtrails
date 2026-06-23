@@ -24,38 +24,6 @@ export class CodeBlockCreatorModal extends Modal {
     const mandatoryInput: Readonly<MandatoryInput>[] = createMandatoryInput()
     const optionalInput: Readonly<OptionalInput>[] = createOptionalInput(globalSettings)
 
-    // const createCodeBlock = (): string => {
-    //   if (!output.smiles) return ''
-    //   let code = `${output.smiles}\n`
-    //
-    //   const settings: MandatoryInput[] = []
-    //
-    //   const addToSettings = (o: OptionalInput): void => {
-    //     if (o.type === 'expandable')
-    //       o.nestedInput.forEach((o2: OptionalInput) => addToSettings(o2))
-    //     else if (!!o && 'key' in o)
-    //       settings.push(o)
-    //   }
-    //
-    //   optionalInput.forEach((o: OptionalInput) =>
-    //     addToSettings(o)
-    //   )
-    //
-    //   for (const setting of settings) {
-    //     if (!setting) continue
-    //
-    //     const localValue = output[setting.key]
-    //     if (localValue === undefined || localValue === '') continue
-    //
-    //     const key: string = setting.key
-    //     const globalValue = setting.current
-    //     if (globalValue === localValue) continue
-    //
-    //     code += `${key}: ${localValue}\n`
-    //   }
-    //
-    //   return `\`\`\`smiles\n${code}\`\`\``
-    // }
     const onUpdatePreview = (previewEl: HTMLElement): void => {
       previewEl.empty()
 

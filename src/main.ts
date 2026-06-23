@@ -5,6 +5,7 @@ import {DEFAULT_SETTINGS, PluginSettings} from './definitions/settings'
 import {Popup} from './popup-util'
 import {ContextMenuBuilder} from './context-menu'
 import {CodeBlockCreatorModal} from './utils/code-block-creator-modal'
+import {Check} from "./utils/preconditions";
 
 /* To read: https://hunterheidenreich.com/notes/chemistry/molecular-representations/notations/smiles/ */
 export default class SmilesDrawerToObsidianPlugin extends Plugin {
@@ -20,15 +21,18 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
     this.addSettingTab(new SmilesDrawerSettingsTab(this.app, this))
 
 
-    this.addRibbonIcon('lucide-atom', 'Chemtrails: Open code block creator', () => {
-      this.showCodeBlockCreator()
-    })
+    if (Check.isDesktop()) {
 
-    this.addCommand({
-      id: 'open-code-block-creator',
-      name: 'Open code block creator',
-      callback: () => this.showCodeBlockCreator()
-    })
+      if (this.settings.addRibbonIcon) this.addRibbonIcon('lucide-atom',
+        'Chemtrails: Open code block creator', () => {
+          this.showCodeBlockCreator()
+        })
+
+      if (this.settings.addCommand) this.addCommand({
+        id: 'open-code-block-creator', name: 'Open code block creator', callback: () => this.showCodeBlockCreator()
+      })
+
+    }
 
   }
 

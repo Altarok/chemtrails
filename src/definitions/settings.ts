@@ -5,6 +5,8 @@ export interface PluginSettings extends OriginalSmilesDrawerSettings {
   backgroundColor: string
   /* False means small containers, true means full window width */
   containerWidthMax: boolean
+  addRibbonIcon: boolean
+  addCommand: boolean
 }
 
 function getDefaultTheme(): ThemesType {
@@ -18,6 +20,8 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   codeBlockIdentifier: 'smiles',
   backgroundColor: '',
   containerWidthMax: false,
+  addRibbonIcon: true,
+  addCommand: true,
   /* Original smiles-drawer settings:  */
   width: 250,
   height: 150, /* OG was 500 */

@@ -32,6 +32,23 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
     this.addHorizontalSeparator(containerEl)
     this.addResetButton(containerEl)
 
+
+    this.addHorizontalSeparator(containerEl)
+
+    /* Make plugin and command optional ... */
+
+    new Setting(containerEl).setName('Add ribbon icon').setDesc('Button opens code block creator.')
+    .addToggle(t => t.setValue(this.plugin.settings.addRibbonIcon).onChange(async (value) => {
+      this.plugin.settings.addRibbonIcon = value
+      await this.plugin.saveSettings()
+    }))
+
+    new Setting(containerEl).setName('Add plugin command').setDesc('Command opens code block creator.')
+    .addToggle(t => t.setValue(this.plugin.settings.addCommand).onChange(async (value) => {
+      this.plugin.settings.addCommand = value
+      await this.plugin.saveSettings()
+    }))
+
   }
 
   private addMajorGraphicSettings(containerEl: HTMLElement) {
