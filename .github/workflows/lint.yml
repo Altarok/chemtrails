@@ -22,7 +22,7 @@ jobs:
                   cache: "npm"
 
             - name: Inject Remote Util Dependency
-              run: npm install obsidian-dev-utils@git+https://github.com/Altarok/obsidian-dev-utils.git --no-save
+              run: npm install obsidian-dev-utils@git+https://github.com/Altarok/obsidian-dev-utils.git --no-save --force
 
             - run: npm ci
             - run: npm run build --if-present

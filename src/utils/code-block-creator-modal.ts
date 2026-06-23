@@ -85,7 +85,7 @@ export class CodeBlockCreatorModal extends Modal {
       const globalValue = globalSettings[key]
 
       if (globalValue !== localValue && typeof globalValue === typeof localValue) {
-        setSettingProperty(key, localValue as PluginSettings[typeof key])
+        setSettingProperty(key, localValue)
       }
     }
 
