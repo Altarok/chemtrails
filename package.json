@@ -1,6 +1,6 @@
 {
   "name": "chemtrails",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "description": "Renders SMILES chemical notations as crisp SVG diagrams.",
   "keywords": [
