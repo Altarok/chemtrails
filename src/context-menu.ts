@@ -76,7 +76,7 @@ export class ContextMenuBuilder {
       .setTitle('Copy SMILES notation (text)')
       .setIcon('copy')
       .onClick(async () => {
-        void copyTextToClipboard(`\`${this.smilesString}\``)
+        void copyTextToClipboard(this.smilesString)
       })
     )
   }
