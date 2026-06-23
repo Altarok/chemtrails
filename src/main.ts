@@ -5,7 +5,7 @@ import {DEFAULT_SETTINGS, PluginSettings} from './definitions/settings'
 import {Popup} from './popup-util'
 import {ContextMenuBuilder} from './context-menu'
 import {CodeBlockCreatorModal} from './utils/code-block-creator-modal'
-import {Check} from "./utils/preconditions";
+import {Check} from './utils/preconditions'
 
 /* To read: https://hunterheidenreich.com/notes/chemistry/molecular-representations/notations/smiles/ */
 export default class SmilesDrawerToObsidianPlugin extends Plugin {

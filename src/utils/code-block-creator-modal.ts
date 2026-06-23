@@ -17,7 +17,7 @@ export class CodeBlockCreatorModal extends Modal {
 
     /* Copy global settings */
     const globalSettings: Readonly<PluginSettings> = Object.assign({}, this.plugin.settings)
-    const output: Record<string, OutputData> = {};
+    const output: Record<string, OutputData> = {}
     output['smiles'] = ''
     for (const key of Object.keys(globalSettings)) output[key] = undefined
 
@@ -29,9 +29,7 @@ export class CodeBlockCreatorModal extends Modal {
 
       const smilesString: string = output.smiles as string
 
-      if (!smilesString) {
-        return;
-      }
+      if (!smilesString) return
 
       const svgElement = previewEl.createSvg('svg', {attr: {'width': 300, 'height': globalSettings.height}})
 
@@ -89,7 +87,7 @@ export class CodeBlockCreatorModal extends Modal {
       }
     }
 
-    return mergedSettings;
+    return mergedSettings
   }
 
   onClose() {
