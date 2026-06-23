@@ -57,4 +57,4 @@ CN1C=NC2=C1C(=O)N(C(=O)N2C)C
   - Add plugin command.
   - Add option to copy entire code blocks as text.
   - Add optional local settings to each image, overwriting global settings.
-
+- 0.4.2: Update external smiles-drawer version 
