@@ -30,7 +30,6 @@ export class CodeBlockCreatorModal extends Modal {
       const smilesString: string = output.smiles as string
 
       if (!smilesString) {
-        previewEl.setText("Enter a SMILES configuration above to generate preview...")
         return;
       }
 
@@ -60,7 +59,6 @@ export class CodeBlockCreatorModal extends Modal {
         mandatory: mandatoryInput,
         optional: optionalInput,
         output: output,
-        // createCodeBlock,
         onUpdatePreview
       }
     ).display()
@@ -106,7 +104,7 @@ function createMandatoryInput(): Readonly<MandatoryInput>[] {
     type: 'string',
     prompt: 'Please input SMILES notation.',
     key: 'smiles',
-    codeBlockKey: '',
+    ignoreKeyInCodeBlock: true,
     current: '',
     tooltip: 'This will apply a theme to your code block.'
   }]
@@ -148,11 +146,6 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
           type: 'boolean', prompt: 'Show explicit hydrogen atoms.', key: 'explicitHydrogens',
           current: globalSettings.explicitHydrogens,
         },
-      ]
-    },
-    {
-      type: 'expandable', prompt: 'Boolean flags',
-      nestedInput: [
         {
           type: 'boolean', prompt: 'Compact drawing?', key: 'compactDrawing',
           tooltip: 'Shortens some molecules',
