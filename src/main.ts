@@ -117,7 +117,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
       container.addClass('chemtrails-smiles-error-msg')
     })
 
-    new ContextMenuBuilder(this, container, smilesString, svgEl, localSettings).build()
+    new ContextMenuBuilder(this, source, container, smilesString, svgEl, localSettings).build()
   }
 
   private showCodeBlockCreator() {

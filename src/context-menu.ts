@@ -1,10 +1,11 @@
 import {PluginSettings} from './definitions/settings'
-import {MarkdownView, Menu} from 'obsidian'
+import {Menu} from 'obsidian'
 import {Popup} from './popup-util'
 import SmilesDrawerToObsidianPlugin from './main'
 
 export class ContextMenuBuilder {
   constructor(readonly plugin: SmilesDrawerToObsidianPlugin,
+              readonly source: string,
               readonly container: HTMLDivElement,
               readonly smilesString: string,
               readonly svgEl: SVGSVGElement,
@@ -19,7 +20,8 @@ export class ContextMenuBuilder {
       const menu = new Menu()
       this.addCopySvgAsPngMenuItem(menu)
       this.addCopySmilesNotationMenuItem(menu)
-      this.addEditCodeBlockMenuItem(menu)
+      this.addCopyCompleteCodeBlockMenuItem(menu)
+      // this.addEditCodeBlockMenuItem(menu)
       menu.showAtPosition({x: event.clientX, y: event.clientY})
     })
   }
@@ -74,42 +76,53 @@ export class ContextMenuBuilder {
       .setTitle('Copy SMILES notation (text)')
       .setIcon('copy')
       .onClick(async () => {
-        void copyTextToClipboard(this.smilesString)
+        void copyTextToClipboard(`\`${this.smilesString}\``)
       })
     )
   }
 
-  private addEditCodeBlockMenuItem(menu: Menu) {
-    /* Context menu option 1: Jump to Code Block & Pre-input parameter */
-    menu.addItem((item) => item
-      .setTitle('Edit layout height')
-      .setIcon('pencil')
+  private addCopyCompleteCodeBlockMenuItem(menu: Menu) {
+    menu.addItem((item) =>
+      item
+      .setTitle('Copy entire code block (text)')
+      .setIcon('copy')
       .onClick(async () => {
-        const activeView = this.plugin.app.workspace.getActiveViewOfType(MarkdownView)
-        if (!activeView) return
-
-        const editor = activeView.editor
-        const totalLines = editor.lineCount()
-
-        for (let i = 0; i < totalLines; i++) {
-          const lineText = editor.getLine(i)
-
-          /* Look for matching SMILES notation */
-          if (lineText.trim() === this.smilesString) {
-            const targetLine = i + 1
-
-            editor.setCursor({line: targetLine, ch: 0})
-            editor.focus()
-
-            /* Insert a new config line directly below */
-            editor.replaceRange('height: \n', {line: targetLine, ch: 0})
-            editor.setCursor({line: targetLine, ch: 8})
-            break
-          }
-        }
+        void copyTextToClipboard(`\`\`\`${this.settings.codeBlockIdentifier}\n${this.source}\n\`\`\``)
       })
     )
   }
+
+  // private addEditCodeBlockMenuItem(menu: Menu) {
+  //   /* Context menu option 1: Jump to Code Block & Pre-input parameter */
+  //   menu.addItem((item) => item
+  //     .setTitle('Edit layout height')
+  //     .setIcon('pencil')
+  //     .onClick(async () => {
+  //       const activeView = this.plugin.app.workspace.getActiveViewOfType(MarkdownView)
+  //       if (!activeView) return
+  //
+  //       const editor = activeView.editor
+  //       const totalLines = editor.lineCount()
+  //
+  //       for (let i = 0; i < totalLines; i++) {
+  //         const lineText = editor.getLine(i)
+  //
+  //         /* Look for matching SMILES notation */
+  //         if (lineText.trim() === this.smilesString) {
+  //           const targetLine = i + 1
+  //
+  //           editor.setCursor({line: targetLine, ch: 0})
+  //           editor.focus()
+  //
+  //           /* Insert a new config line directly below */
+  //           editor.replaceRange('height: \n', {line: targetLine, ch: 0})
+  //           editor.setCursor({line: targetLine, ch: 8})
+  //           break
+  //         }
+  //       }
+  //     })
+  //   )
+  // }
 
 
 }
