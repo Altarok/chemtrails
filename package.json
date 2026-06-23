@@ -1,6 +1,6 @@
 {
   "name": "chemtrails",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "private": true,
   "description": "Renders SMILES chemical notations as crisp SVG diagrams.",
   "keywords": [
@@ -25,7 +25,7 @@
     "eslint": "^10.4.0",
     "eslint-plugin-obsidianmd": "latest",
     "obsidian": "1.12.3",
-    "smiles-drawer": "^2.3.0",
+    "smiles-drawer": "^2.3.1",
     "stylelint": "^17.13.0",
     "stylelint-config-standard": "^40.0.0",
     "typescript": "^5.8.3",
