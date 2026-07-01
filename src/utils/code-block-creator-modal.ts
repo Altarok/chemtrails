@@ -76,7 +76,7 @@ export class CodeBlockCreatorModal extends Modal {
       mergedSettings[key] = val
     }
 
-    for (const key of Object.keys(globalSettings) as Array<keyof PluginSettings>) {
+    for (const key of Object.keys(globalSettings) as (keyof PluginSettings)[]) {
       const localValue = localSettings[key]
       if (localValue === undefined) continue
 
