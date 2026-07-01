@@ -56,7 +56,7 @@ export class CodeBlockCreatorModal extends Modal {
         codeBlockId: globalSettings.codeBlockIdentifier,
         mandatory: mandatoryInput,
         optional: optionalInput,
-        output: output,
+        output,
         onUpdatePreview
       }
     ).display()

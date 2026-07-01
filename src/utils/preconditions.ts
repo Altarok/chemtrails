@@ -9,27 +9,13 @@ function isMarkdownFile (plugin:Plugin){
 }
 
 function isMarkdownFileInEditingView(plugin:Plugin): boolean {
-  const activeView = plugin.app.workspace.getActiveViewOfType(MarkdownView)
-
-  if (!activeView) return false
-
-  const state = activeView.getState()
-
-  return state.mode === 'source'
-
-
-  // if (state.mode === 'source') {
-  //   // console.log("The file is in Editing View")
-  //
-  //   // Optional: Distinguish between Live Preview and Source Mode
-  //   if (state.source === true) {
-  //     // console.log("Specifically: Source Mode")
-  //   } else {
-  //     // console.log("Specifically: Live Preview")
-  //   }
-  // } else if (state.mode === 'preview') {
-  //   console.log("The file is in Reading View")
-  // }
+  /*
+   * state.mode === 'source' -> editing view
+   *
+   * state.source === true -> source mode
+   * state.source === false -> live preview
+   */
+  return plugin.app.workspace.getActiveViewOfType(MarkdownView)?.getState().mode === 'source'
 }
 
 export const Check = {
