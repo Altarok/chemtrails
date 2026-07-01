@@ -1,6 +1,6 @@
 import {OriginalSmilesDrawerSettings, ThemesType} from 'smiles-drawer'
 
-export interface PluginSettings extends OriginalSmilesDrawerSettings {
+export type PluginSettings = OriginalSmilesDrawerSettings & {
   codeBlockIdentifier: string
   backgroundColor: string
   /* False means small containers, true means full window width */

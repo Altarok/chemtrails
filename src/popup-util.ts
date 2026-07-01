@@ -1,8 +1,8 @@
 import {Notice} from 'obsidian'
 
 /* Milliseconds to show popups */
-const short: number = 1000
-const long: number = 2000
+const short = 1000
+const long = 2000
 
 export const Popup = {
   ok,

@@ -18,7 +18,7 @@ export class CodeBlockCreatorModal extends Modal {
     /* Copy global settings */
     const globalSettings: Readonly<PluginSettings> = Object.assign({}, this.plugin.settings)
     const output: Record<string, OutputData> = {}
-    output['smiles'] = ''
+    output.smiles = ''
     for (const key of Object.keys(globalSettings)) output[key] = undefined
 
     const mandatoryInput: Readonly<MandatoryInput>[] = createMandatoryInput()
@@ -116,7 +116,7 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
           type: 'dropdown', prompt: 'Theme', key: 'theme',
           tooltip: 'Apply theme to your code block.',
           current: globalSettings.theme,
-          dropdownOptions: MOLECULE_THEMES as readonly string[]
+          dropdownOptions: MOLECULE_THEMES
         },
         {
           type: 'color', prompt: 'Background color', key: 'backgroundColor',
@@ -131,13 +131,13 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
           type: 'dropdown', prompt: 'How to visualize atoms', key: 'atomVisualization',
           tooltip: 'Changes of single atoms from letters to circles or hies them entirely.',
           current: globalSettings.atomVisualization,
-          dropdownOptions: ATOM_VISUALIZATION as readonly string[]
+          dropdownOptions: ATOM_VISUALIZATION
         },
         {
           type: 'dropdown', prompt: 'Select which carbons to show.', key: 'showCarbons',
           tooltip: 'Select which carbon atoms to show.',
           current: globalSettings.showCarbons,
-          dropdownOptions: SHOW_CARBONS as readonly string[]
+          dropdownOptions: SHOW_CARBONS
         },
         {
           type: 'boolean', prompt: 'Show explicit hydrogen atoms.', key: 'explicitHydrogens',

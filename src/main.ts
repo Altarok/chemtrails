@@ -38,7 +38,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
 
   async loadSettings() {
     const source = (await this.loadData()) as Partial<PluginSettings> | null
-    const isSourceExists: boolean = !!source
+    const isSourceExists = !!source // boolean
     this.settings = Object.assign({}, DEFAULT_SETTINGS, source)
     if (!isSourceExists) {
       await this.saveSettings()
@@ -52,7 +52,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
 
   private registerSmiles(source: string, el: HTMLElement) {
     const lines = source.split('\n')
-    const smilesString = lines[0].trim()
+    const smilesString = lines[0]?.trim() ?? undefined
 
     if (!smilesString) return
 
@@ -62,7 +62,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
     const settingsRef = localSettings as unknown as Record<string, unknown>
 
     for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim()
+      const line = lines[i]?.trim() ?? undefined
       if (!line) continue
 
       /* Split by the first colon only, in case a value contains a colon */

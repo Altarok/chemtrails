@@ -7,7 +7,7 @@ declare module 'smiles-drawer' {
     'matrix' | 'github' | 'carbon' | 'cyberpunk' | 'gruvbox' |
     'gruvbox-dark' | 'custom'
 
-  export interface OriginalSmilesDrawerNumericSettings {
+  export type OriginalSmilesDrawerNumericSettings = {
     /* Drawing width (default: 500) */
     width: number
     /* Drawing height (default: 500) */
@@ -41,7 +41,7 @@ declare module 'smiles-drawer' {
    *
    * See https://github.com/reymond-group/smilesDrawer/blob/master/README.md#options
    */
-  export interface OriginalSmilesDrawerSettings extends OriginalSmilesDrawerNumericSettings {
+  export type OriginalSmilesDrawerSettings = OriginalSmilesDrawerNumericSettings & {
     /* Atom Visualization (default: 'default') */
     atomVisualization: AtomVisualizationType
     /* Use experimental SSSR (default: false) */
