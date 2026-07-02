@@ -52,7 +52,16 @@ export default [
       "@typescript-eslint/no-explicit-any": "warn",
 
       // Nullish-coalescing guard rails (perfect for your UI state evaluations)
-      "@typescript-eslint/prefer-nullish-coalescing": "warn"
+      "@typescript-eslint/prefer-nullish-coalescing": "warn",
+
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "^_",
+          "caughtErrorsIgnorePattern": "^_"
+        }
+      ]
 
       // "@typescript-eslint/no-redundant-type-constituents": "error", // catch redundant types like 'Error | unknown'
       // "@typescript-eslint/no-explicit-any": "warn",
@@ -65,6 +74,7 @@ export default [
       // "@typescript-eslint/prefer-optional-chain": "error", // Enforces safe optional chaining or nullish coalescing instead of unsafe casting
       // "@typescript-eslint/prefer-nullish-coalescing": "error",
       // "prefer-template": "warn", // Flags old-school string concatenation in favor of template strings
-    },
-  },
+
+    }
+  }
 ];
