@@ -1,16 +1,16 @@
 # Node dependencies and build tracking
 /node_modules
 .npm
-# Compilation outputs
-main.js
-# Local environment and developer tools overrides
-.env
-*.log
-# System junk files
-.DS_Store
-Thumbs.db
-# IDE data and workspace persistence
+# IDE
 .idea/
 .vscode/
-# Obsidian sandbox overrides
+coverage/
+# Plugin files
+main.js
 data.json
+# dev junk
+.env
+*.log
+# system junk
+.DS_Store
+Thumbs.db
