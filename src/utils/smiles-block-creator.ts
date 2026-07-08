@@ -36,7 +36,7 @@ export class CodeBlockCreatorModal extends Modal {
       svgElement.setAttribute('max-width', '300')
       svgElement.setAttribute('max-height', '200')
 
-      const overwriteSettings = this.mergeSettings(globalSettings, output)
+      const overwriteSettings = mergeSettings(globalSettings, output)
 
       const svgDrawer = new SmilesDrawer.SvgDrawer(overwriteSettings)
 
@@ -64,31 +64,7 @@ export class CodeBlockCreatorModal extends Modal {
     contentEl.focus()
   }
 
-  /**
-   * @param globalSettings - global plugin settings
-   * @param localSettings - subset of plugin settings user chose to overwrite with code block creator
-   */
-  private mergeSettings(globalSettings: Readonly<PluginSettings>, localSettings: Record<string, string | boolean | number | undefined>) {
-    const mergedSettings: PluginSettings = Object.assign({}, globalSettings)
 
-    const setSettingProperty = <K extends keyof PluginSettings>(key: K, val: PluginSettings[K]) => {
-      /* AI written helper method for type compliance */
-      mergedSettings[key] = val
-    }
-
-    for (const key of Object.keys(globalSettings) as (keyof PluginSettings)[]) {
-      const localValue = localSettings[key]
-      if (localValue === undefined) continue
-
-      const globalValue = globalSettings[key]
-
-      if (globalValue !== localValue && typeof globalValue === typeof localValue) {
-        setSettingProperty(key, localValue)
-      }
-    }
-
-    return mergedSettings
-  }
 
   onClose() {
     this.contentEl.empty()
@@ -96,6 +72,31 @@ export class CodeBlockCreatorModal extends Modal {
 
 }
 
+/**
+ * @param globalSettings - global plugin settings
+ * @param localSettings - subset of plugin settings user chose to overwrite with code block creator
+ */
+function mergeSettings(globalSettings: Readonly<PluginSettings>, localSettings: Record<string, string | boolean | number | undefined>) {
+  const mergedSettings: PluginSettings = Object.assign({}, globalSettings)
+
+  const setSettingProperty = <K extends keyof PluginSettings>(key: K, val: PluginSettings[K]) => {
+    /* AI written helper method for type compliance */
+    mergedSettings[key] = val
+  }
+
+  for (const key of Object.keys(globalSettings) as (keyof PluginSettings)[]) {
+    const localValue = localSettings[key]
+    if (localValue === undefined) continue
+
+    const globalValue = globalSettings[key]
+
+    if (globalValue !== localValue && typeof globalValue === typeof localValue) {
+      setSettingProperty(key, localValue)
+    }
+  }
+
+  return mergedSettings
+}
 
 function createMandatoryInput(): Readonly<MandatoryInput>[] {
   return [{
