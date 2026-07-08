@@ -4,7 +4,7 @@ import SmilesDrawerSettingsTab from './settings-view'
 import {DEFAULT_SETTINGS, PluginSettings} from './definitions/settings'
 import {Popup} from './popup-util'
 import {ContextMenuBuilder} from './context-menu'
-import {CodeBlockCreatorModal} from './utils/smiles-block-creator'
+import {CodeBlockCreatorModal} from './utils/smiles-codeblock-creator'
 // import {Check} from './utils/preconditions'
 
 /* To read: https://hunterheidenreich.com/notes/chemistry/molecular-representations/notations/smiles/ */
