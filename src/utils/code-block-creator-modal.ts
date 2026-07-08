@@ -1,9 +1,9 @@
-import SmilesDrawerToObsidianPlugin from '../main'
 import {App, Modal} from 'obsidian'
+import SmilesDrawerToObsidianPlugin from '../main'
 import {PluginSettings} from '../definitions/settings'
 import {ATOM_VISUALIZATION, MOLECULE_THEMES, SHOW_CARBONS} from '../definitions/smiles-drawer-adapter'
-import {GenericModal, MandatoryInput, OptionalInput, OutputData} from '@Altarok/obsidian-dev-utils/src'
 import SmilesDrawer from 'smiles-drawer'
+import {GenericModal, MandatoryInput, OptionalInput, OutputData} from '@Altarok/obsidian-dev-utils/src'
 
 // npm link/update @Altarok/obsidian-dev-utils
 export class CodeBlockCreatorModal extends Modal {
