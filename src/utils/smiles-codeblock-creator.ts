@@ -3,9 +3,8 @@ import SmilesDrawerToObsidianPlugin from '../main'
 import {PluginSettings} from '../definitions/settings'
 import {ATOM_VISUALIZATION, MOLECULE_THEMES, SHOW_CARBONS} from '../definitions/smiles-drawer-adapter'
 import SmilesDrawer from 'smiles-drawer'
-import {GenericModal, MandatoryInput, OptionalInput, OutputData} from '@Altarok/utils'
+import {GenericModal, GenericModalInput, UserInput, OutputData} from '@Altarok/utils'
 
-// npm link/update @Altarok/obsidian-dev-utils
 export class CodeBlockCreatorModal extends Modal {
   constructor(public readonly app: App, public readonly plugin: SmilesDrawerToObsidianPlugin) {
     super(app)
@@ -21,8 +20,13 @@ export class CodeBlockCreatorModal extends Modal {
     output.smiles = ''
     for (const key of Object.keys(globalSettings)) output[key] = undefined
 
-    const mandatoryInput: Readonly<MandatoryInput>[] = createMandatoryInput()
-    const optionalInput: Readonly<OptionalInput>[] = createOptionalInput(globalSettings)
+    const mandatoryInput: Readonly<UserInput>[] = createMandatoryInput()
+    const optionalInput: Readonly<UserInput>[] = createOptionalInput(globalSettings)
+
+    const allFlatInputs: Readonly<UserInput>[] = [
+      ...mandatoryInput,
+      ...optionalInput.flatMap(i => i.type === 'expandable' ? i.nestedInput : [i])
+    ]
 
     const onUpdatePreview = (previewEl: HTMLElement): void => {
       previewEl.empty()
@@ -50,20 +54,18 @@ export class CodeBlockCreatorModal extends Modal {
 
     }
 
-    new GenericModal(contentEl,
-      {
-        pluginName: 'Chemtrails',
-        codeBlockId: globalSettings.codeBlockIdentifier,
-        mandatory: mandatoryInput,
-        optional: optionalInput,
-        output,
-        onUpdatePreview
-      }
-    ).display()
+    const modalInput: GenericModalInput = {
+      pluginName: 'Chemtrails',
+      codeBlockId: globalSettings.codeBlockIdentifier,
+      input: allFlatInputs,
+      onUpdatePreview,
+      output
+    }
+
+    new GenericModal(contentEl, modalInput).display()
 
     contentEl.focus()
   }
-
 
 
   onClose() {
@@ -98,17 +100,18 @@ function mergeSettings(globalSettings: Readonly<PluginSettings>, localSettings: 
   return mergedSettings
 }
 
-function createMandatoryInput(): Readonly<MandatoryInput>[] {
+function createMandatoryInput(): Readonly<UserInput>[] {
   return [{
     type: 'string',
     prompt: 'Please input SMILES notation.',
     key: 'smiles',
     ignoreKeyInCodeBlock: true,
+    mandatory: true,
     current: '',
   }]
 }
 
-function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly<OptionalInput>[] {
+function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly<UserInput>[] {
   return [
     {
       type: 'expandable', prompt: 'Colors and Themes',
