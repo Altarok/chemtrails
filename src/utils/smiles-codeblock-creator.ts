@@ -3,7 +3,7 @@ import SmilesDrawerToObsidianPlugin from '../main'
 import {PluginSettings} from '../definitions/settings'
 import {ATOM_VISUALIZATION, MOLECULE_THEMES, SHOW_CARBONS} from '../definitions/smiles-drawer-adapter'
 import SmilesDrawer from 'smiles-drawer'
-import {GenericModal, GenericModalInput, UserInput, OutputData} from '@Altarok/utils'
+import {GenericModal, GenericModalInput, UserInput, OutputData, NonExpandableInput} from '@Altarok/utils'
 
 export class CodeBlockCreatorModal extends Modal {
   constructor(public readonly app: App, public readonly plugin: SmilesDrawerToObsidianPlugin) {
@@ -23,8 +23,8 @@ export class CodeBlockCreatorModal extends Modal {
     const mandatoryInput: Readonly<UserInput>[] = createMandatoryInput()
     const optionalInput: Readonly<UserInput>[] = createOptionalInput(globalSettings)
 
-    const allFlatInputs: Readonly<UserInput>[] = [
-      ...mandatoryInput,
+    const allFlatInputs: Readonly<NonExpandableInput>[] = [
+      ...mandatoryInput.flatMap(i => i.type === 'expandable' ? i.nestedInput : [i]),
       ...optionalInput.flatMap(i => i.type === 'expandable' ? i.nestedInput : [i])
     ]
 
@@ -115,6 +115,7 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
   return [
     {
       type: 'expandable', prompt: 'Colors and Themes',
+      mandatory: false,
       nestedInput: [
         {
           type: 'dropdown', prompt: 'Theme', key: 'theme',
@@ -130,6 +131,7 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
     },
     {
       type: 'expandable', prompt: 'Visuals',
+      mandatory: false,
       nestedInput: [
         {
           type: 'dropdown', prompt: 'How to visualize atoms', key: 'atomVisualization',
@@ -164,6 +166,7 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
     },
     {
       type: 'expandable', prompt: 'Advanced',
+      mandatory: false,
       nestedInput: [
         {
           type: 'slider', prompt: 'Padding', key: 'padding',
@@ -212,7 +215,7 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
           from: 1, to: 10, step: 1, current: globalSettings.overlapResolutionIterations,
         },
       ]
-    },
+    }
   ]
 }
 
