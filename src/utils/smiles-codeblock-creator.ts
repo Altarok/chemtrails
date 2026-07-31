@@ -23,11 +23,6 @@ export class CodeBlockCreatorModal extends Modal {
     const mandatoryInput: Readonly<UserInput>[] = createMandatoryInput()
     const optionalInput: Readonly<UserInput>[] = createOptionalInput(globalSettings)
 
-    // const allFlatInputs: Readonly<NonExpandableInput>[] = [
-    // ...mandatoryInput.flatMap(i => i.type === 'expandable' ? i.nestedInput : [i]),
-    // ...optionalInput.flatMap(i => i.type === 'expandable' ? i.nestedInput : [i])
-    // ]
-
     const onUpdatePreview = (previewEl: HTMLElement): void => {
       previewEl.empty()
 
