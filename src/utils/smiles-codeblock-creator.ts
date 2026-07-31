@@ -3,7 +3,7 @@ import SmilesDrawerToObsidianPlugin from '../main'
 import {PluginSettings} from '../definitions/settings'
 import {ATOM_VISUALIZATION, MOLECULE_THEMES, SHOW_CARBONS} from '../definitions/smiles-drawer-adapter'
 import SmilesDrawer from 'smiles-drawer'
-import {GenericModal, GenericModalInput, NonExpandableInput, OutputData, UserInput} from '@Altarok/obsidian-dev-utils'
+import {GenericModal, GenericModalInput, OutputData, UserInput} from '@Altarok/obsidian-dev-utils'
 
 export class CodeBlockCreatorModal extends Modal {
   constructor(public readonly app: App, public readonly plugin: SmilesDrawerToObsidianPlugin) {
@@ -23,10 +23,10 @@ export class CodeBlockCreatorModal extends Modal {
     const mandatoryInput: Readonly<UserInput>[] = createMandatoryInput()
     const optionalInput: Readonly<UserInput>[] = createOptionalInput(globalSettings)
 
-    const allFlatInputs: Readonly<NonExpandableInput>[] = [
-      ...mandatoryInput.flatMap(i => i.type === 'expandable' ? i.nestedInput : [i]),
-      ...optionalInput.flatMap(i => i.type === 'expandable' ? i.nestedInput : [i])
-    ]
+    // const allFlatInputs: Readonly<NonExpandableInput>[] = [
+    // ...mandatoryInput.flatMap(i => i.type === 'expandable' ? i.nestedInput : [i]),
+    // ...optionalInput.flatMap(i => i.type === 'expandable' ? i.nestedInput : [i])
+    // ]
 
     const onUpdatePreview = (previewEl: HTMLElement): void => {
       previewEl.empty()
@@ -55,7 +55,6 @@ export class CodeBlockCreatorModal extends Modal {
     }
 
     const allInputs: Readonly<UserInput>[] = [...mandatoryInput, ...optionalInput]
-
 
     const modalInput: GenericModalInput = {
       pluginName: 'Chemtrails',
