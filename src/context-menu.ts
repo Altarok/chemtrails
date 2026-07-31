@@ -30,61 +30,61 @@ export class ContextMenuBuilder {
     /* Context menu option 2: Copy SVG as PNG (as of version 0.3.0 ) */
     menu.addItem((item) =>
       item
-        .setTitle('Copy as image (PNG)')
-        .setIcon('copy')
-        .onClick(() => {
-          try {
-            /* Get the raw XML string from your actual generated SVG element */
-            const svgData = new XMLSerializer().serializeToString(this.svgEl)
+      .setTitle('Copy as image (PNG)')
+      .setIcon('copy')
+      .onClick(() => {
+        try {
+          /* Get the raw XML string from your actual generated SVG element */
+          const svgData = new XMLSerializer().serializeToString(this.svgEl)
 
-            /* Create a hidden canvas element wrapper to convert vector to pixel raster data */
-            const canvas = window.activeDocument.createElement('canvas')
-            const ctx = canvas.getContext('2d')
-            if (!ctx) return
+          /* Create a hidden canvas element wrapper to convert vector to pixel raster data */
+          const canvas = window.document.createElement('canvas')
+          const ctx = canvas.getContext('2d')
+          if (!ctx) return
 
-            /* Standard boundaries based on your active dimensions */
-            canvas.width = this.settings.width
-            canvas.height = this.settings.height
+          /* Standard boundaries based on your active dimensions */
+          canvas.width = this.settings.width
+          canvas.height = this.settings.height
 
-            /* Set up a modern blob image conversion pipeline */
-            const img = new window.Image()
-            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'})
-            const url = URL.createObjectURL(svgBlob)
+          /* Set up a modern blob image conversion pipeline */
+          const img = new window.Image()
+          const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'})
+          const url = URL.createObjectURL(svgBlob)
 
-            img.onload = () => {
-              ctx.drawImage(img, 0, 0)
-              URL.revokeObjectURL(url)
+          img.onload = () => {
+            ctx.drawImage(img, 0, 0)
+            URL.revokeObjectURL(url)
 
-              /* Extract standard PNG image blob from canvas cache data without a leaking promise */
-              canvas.toBlob((pngBlob) => {
-                if (!pngBlob) return
-                void copyImageToClipboard(pngBlob)
-              }, 'image/png')
-            }
-
-            img.src = url
-          } catch (err) {
-            Popup.nok('Copy failed', err)
+            /* Extract standard PNG image blob from canvas cache data without a leaking promise */
+            canvas.toBlob((pngBlob) => {
+              if (!pngBlob) return
+              void copyImageToClipboard(pngBlob)
+            }, 'image/png')
           }
-        })
+
+          img.src = url
+        } catch (err) {
+          Popup.nok('Copy failed', err)
+        }
+      })
     )
   }
 
   private addCopySmilesNotationMenuItem(menu: Menu) {
     menu.addItem((item) =>
       item
-        .setTitle('Copy SMILES notation (text)')
-        .setIcon('copy')
-        .onClick(async () => await copyTextToClipboard(this.smilesString))
+      .setTitle('Copy SMILES notation (text)')
+      .setIcon('copy')
+      .onClick(async () => await copyTextToClipboard(this.smilesString))
     )
   }
 
   private addCopyCompleteCodeBlockMenuItem(menu: Menu) {
     menu.addItem((item) =>
       item
-        .setTitle('Copy entire code block (text)')
-        .setIcon('copy')
-        .onClick(async () => await copyTextToClipboard(`\`\`\`${this.settings.codeBlockIdentifier}\n${this.source}\n\`\`\``))
+      .setTitle('Copy entire code block (text)')
+      .setIcon('copy')
+      .onClick(async () => await copyTextToClipboard(`\`\`\`${this.settings.codeBlockIdentifier}\n${this.source}\n\`\`\``))
     )
   }
 
