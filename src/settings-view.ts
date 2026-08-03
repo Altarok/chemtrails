@@ -233,8 +233,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
             name: 'Reset values?',
             desc: `There's no fail-safe. This is 1 click only.`,
             render: (setting) => {
-              setting.addButton((bb) =>
-                bb.setButtonText("Reset")
+              setting.addButton(bb => bb.setButtonText("Reset")
                 .setDestructive()
                 .onClick(async () => {
                     /* JS Hint: be aware that we can't just overwrite one with the other */
