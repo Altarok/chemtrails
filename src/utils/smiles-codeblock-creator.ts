@@ -5,6 +5,8 @@ import {ATOM_VISUALIZATION, MOLECULE_THEMES, SHOW_CARBONS} from '../definitions/
 import SmilesDrawer from 'smiles-drawer'
 import {GenericModal, GenericModalInput, OutputData, UserInput} from '@Altarok/obsidian-dev-utils'
 
+//import {GenericModal, GenericModalInput, OutputData, UserInput} from '@Altarok/utils'
+
 export class CodeBlockCreatorModal extends Modal {
   constructor(public readonly app: App,
               public readonly plugin: SmilesDrawerToObsidianPlugin,
@@ -20,9 +22,10 @@ export class CodeBlockCreatorModal extends Modal {
     const globalSettings: Readonly<PluginSettings> = Object.assign({}, this.plugin.settings)
     const output: Record<string, OutputData> = {}
     output.smiles = this.exampleSmilesInput ?? ''
+
     for (const key of Object.keys(globalSettings)) output[key] = undefined
 
-    const mandatoryInput: Readonly<UserInput>[] = createMandatoryInput()
+    const mandatoryInput: Readonly<UserInput>[] = createMandatoryInput(this.exampleSmilesInput)
     const optionalInput: Readonly<UserInput>[] = createOptionalInput(globalSettings)
 
     const onUpdatePreview = (previewEl: HTMLElement): void => {
@@ -106,7 +109,7 @@ function createMandatoryInput(exampleSmilesInput?: string): Readonly<UserInput>[
     key: 'smiles',
     ignoreKeyInCodeBlock: true,
     mandatory: true,
-    current: exampleSmilesInput ?? '',
+    current: exampleSmilesInput ?? ''
   }]
 }
 
