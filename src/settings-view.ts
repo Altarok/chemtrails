@@ -250,6 +250,9 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
     ]
   }
 
+  /*
+   * Keep old settings, for now
+   */
 //  display(): void {
 //
 //    let {containerEl} = this
