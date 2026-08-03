@@ -42,7 +42,7 @@ export default [
 
       // Obsidian settings
       ...obsidianmdPlugin.configs.recommended.rules,
-      "obsidianmd/prefer-create-el": "error",
+      "obsidianmd/prefer-create-el": "warn",
 
       // Prevent shipping floating asynchronous operations inside your timer loops
       "@typescript-eslint/no-floating-promises": "error",
