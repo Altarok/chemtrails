@@ -120,7 +120,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
     new ContextMenuBuilder(this, source, container, smilesString, svgEl, localSettings).build()
   }
 
-  private showCodeBlockCreator() {
-    new CodeBlockCreatorModal(this.app, this).open()
+  showCodeBlockCreator(exampleSmilesInput?: string) {
+    new CodeBlockCreatorModal(this.app, this, exampleSmilesInput).open()
   }
 }

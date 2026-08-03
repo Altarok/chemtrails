@@ -6,7 +6,9 @@ import SmilesDrawer from 'smiles-drawer'
 import {GenericModal, GenericModalInput, OutputData, UserInput} from '@Altarok/obsidian-dev-utils'
 
 export class CodeBlockCreatorModal extends Modal {
-  constructor(public readonly app: App, public readonly plugin: SmilesDrawerToObsidianPlugin) {
+  constructor(public readonly app: App,
+              public readonly plugin: SmilesDrawerToObsidianPlugin,
+              public readonly exampleSmilesInput?: string) {
     super(app)
   }
 
@@ -17,7 +19,7 @@ export class CodeBlockCreatorModal extends Modal {
     /* Copy global settings */
     const globalSettings: Readonly<PluginSettings> = Object.assign({}, this.plugin.settings)
     const output: Record<string, OutputData> = {}
-    output.smiles = ''
+    output.smiles = this.exampleSmilesInput ?? ''
     for (const key of Object.keys(globalSettings)) output[key] = undefined
 
     const mandatoryInput: Readonly<UserInput>[] = createMandatoryInput()
@@ -97,14 +99,14 @@ function mergeSettings(globalSettings: Readonly<PluginSettings>, localSettings: 
   return mergedSettings
 }
 
-function createMandatoryInput(): Readonly<UserInput>[] {
+function createMandatoryInput(exampleSmilesInput?: string): Readonly<UserInput>[] {
   return [{
     type: 'string',
     prompt: 'Please input SMILES notation.',
     key: 'smiles',
     ignoreKeyInCodeBlock: true,
     mandatory: true,
-    current: '',
+    current: exampleSmilesInput ?? '',
   }]
 }
 
@@ -195,10 +197,6 @@ function createOptionalInput(globalSettings: Readonly<PluginSettings>): Readonly
           type: 'slider', prompt: 'Bond spacing', key: 'bondSpacing',
           from: 1, to: 10, step: 0.1, current: globalSettings.bondSpacing,
         },
-        // {
-        //   type: 'slider', prompt: 'Width. Will only apply in note.', key: 'width',
-        //   from: 50, to: 1000, step: 10, current: globalSettings.width,
-        // },
         {
           type: 'slider', prompt: 'Height. Will only apply in note.', key: 'height',
           from: 50, to: 1000, step: 10, current: globalSettings.height,
