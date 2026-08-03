@@ -21,36 +21,52 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
 
     return [
       {
-        name: 'Code block identifier',
-        desc: 'Themes are predefined by the reymond-group. See README. HINT: This requires a plugin reload!',
-        control: {
-          type: 'text', key: 'codeBlockIdentifier',
-          placeholder: DEFAULT_SETTINGS.codeBlockIdentifier,
-          validate: (value: string) => value.trim().length > 0
-            ? undefined : `Can't be empty!`
-        }
-      },
-      {
-        name: 'Theme',
-        desc: 'String you mark your code blocks with. HINT: This requires a plugin reload!',
-        control: {
-          type: 'dropdown', key: 'theme',
-          defaultValue: settings.theme,
-          options: {
-            'dark': 'dark (automatic)',
-            'light': 'light (automatic)',
-            'oldschool': 'oldschool',
-            'solarized': 'solarized',
-            'solarized-dark': 'solarized-dark',
-            'matrix': 'matrix',
-            'github': 'github',
-            'carbon': 'carbon',
-            'cyberpunk': 'cyberpunk',
-            'gruvbox': 'gruvbox',
-            'gruvbox-dark': 'gruvbox-dark',
-            'custom': 'reymond-group',
+        type: 'group',
+        name: 'General',
+        items: [
+          {
+            name: 'Code block identifier',
+            desc: 'Themes are predefined by the reymond-group. See README. HINT: This requires a plugin reload!',
+            control: {
+              type: 'text', key: 'codeBlockIdentifier',
+              placeholder: DEFAULT_SETTINGS.codeBlockIdentifier,
+              validate: (value: string) => value.trim().length > 0
+                ? undefined : `Can't be empty!`
+            }
           },
-        }
+          {
+            name: 'Theme',
+            desc: 'String you mark your code blocks with. HINT: This requires a plugin reload!',
+            control: {
+              type: 'dropdown', key: 'theme',
+              defaultValue: settings.theme,
+              options: {
+                'dark': 'dark (automatic)',
+                'light': 'light (automatic)',
+                'oldschool': 'oldschool',
+                'solarized': 'solarized',
+                'solarized-dark': 'solarized-dark',
+                'matrix': 'matrix',
+                'github': 'github',
+                'carbon': 'carbon',
+                'cyberpunk': 'cyberpunk',
+                'gruvbox': 'gruvbox',
+                'gruvbox-dark': 'gruvbox-dark',
+                'custom': 'reymond-group',
+              },
+            }
+          },
+          {
+            name: 'Add ribbon icon',
+            desc: 'Button opens code block creator. Restart plugin or app after change.',
+            control: {type: 'toggle', key: 'addRibbonIcon'}
+          },
+          {
+            name: 'Add plugin command',
+            desc: 'Command opens code block creator. Restart plugin or app after change.',
+            control: {type: 'toggle', key: 'addCommand'}
+          }
+        ]
       },
       { /* Molecule visualization group */
         type: 'group',
@@ -100,10 +116,10 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
         desc: 'Power-user options.',
         items: [
           {
-            name: 'HINT',
-            desc: `Before changing those, try your values in a live preview by trying the code block creator.
-            \nIt hides behind a ribbon icon.
-            `,
+            name: 'HINT - Click here to test values in live preview',
+            desc: `Before changing the following values, make sure you know what to do.
+             The live preview is also accessible as ribbon icon.
+              You can save or copy a code block created in this way to the currently open markdown file.`,
             action: () => this.plugin.showCodeBlockCreator('N#OPSC=C1CCC1')
           },
           /*
@@ -130,7 +146,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
             control: {
               type: 'slider',
               key: 'fontSizeSmall', defaultValue: DEFAULT_SETTINGS.fontSizeSmall,
-              min: 2, max: 10, step: 0.1
+              min: 2, max: 10, step: 1
             },
           },
           {
@@ -174,7 +190,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
             control: {
               type: 'slider',
               key: 'height', defaultValue: DEFAULT_SETTINGS.height,
-              min: 10, max: 1000, step: 1
+              min: 50, max: 1000, step: 10
             },
           },
           /*
@@ -182,21 +198,42 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
            */
           {
             name: 'Show hydrogen atoms?',
-            desc: 'Show explicit hydrogen atoms.',
+            desc: 'Show explicit hydrogen atoms. (default: true)',
             control: {type: 'toggle', key: 'explicitHydrogens', defaultValue: DEFAULT_SETTINGS.explicitHydrogens},
           },
           {
             name: 'Compact drawing?',
-            desc: 'Draw concatenated terminals and pseudo elements.',
+            desc: 'Draw concatenated terminals and pseudo elements. (default: true)',
             control: {type: 'toggle', key: 'compactDrawing', defaultValue: DEFAULT_SETTINGS.compactDrawing},
           },
           {
             name: 'Isometric drawing?',
-            desc: 'Draw isometric SMILES if available.',
+            desc: 'Draw isometric SMILES if available. (default: true)',
             control: {type: 'toggle', key: 'isometric', defaultValue: DEFAULT_SETTINGS.isometric},
-          }
+          },
+          /*
+           * Whatever this is
+           */
+          {
+            name: 'Overlap sensitivity',
+            control: {
+              type: 'slider',
+              key: 'overlapSensitivity', defaultValue: DEFAULT_SETTINGS.overlapSensitivity,
+              min: 0.1, max: 1, step: 0.01,
+            }
+          },
+          {
+            name: 'Overlap resolution iterations',
+            control: {
+              type: 'slider',
+              key: 'overlapResolutionIterations', defaultValue: DEFAULT_SETTINGS.overlapResolutionIterations,
+              min: 1, max: 10, step: 1,
+            }
+          },
         ]
-      }
+      },
+
+
     ]
   }
 
@@ -214,19 +251,19 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
     this.addVisualSettings(containerEl)
     this.addHorizontalSeparator(containerEl)
     this.addResetButton(containerEl)
-
-
     this.addHorizontalSeparator(containerEl)
 
     /* Make plugin and command optional ... */
 
-    new Setting(containerEl).setName('Add ribbon icon').setDesc('Button opens code block creator.')
+    new Setting(containerEl).setName('Add ribbon icon')
+    .setDesc('Button opens code block creator.')
     .addToggle(t => t.setValue(this.plugin.settings.addRibbonIcon).onChange(async (value) => {
       this.plugin.settings.addRibbonIcon = value
       await this.plugin.saveSettings()
     }))
 
-    new Setting(containerEl).setName('Add plugin command').setDesc('Command opens code block creator.')
+    new Setting(containerEl).setName('Add plugin command')
+    .setDesc('Command opens code block creator.')
     .addToggle(t => t.setValue(this.plugin.settings.addCommand).onChange(async (value) => {
       this.plugin.settings.addCommand = value
       await this.plugin.saveSettings()
