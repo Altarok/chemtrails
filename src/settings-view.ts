@@ -1,8 +1,6 @@
-import {App, PluginSettingTab, Setting, SettingDefinitionItem} from 'obsidian'
+import {App, PluginSettingTab, SettingDefinitionItem} from 'obsidian'
 import SmilesDrawerToObsidianPlugin from './main'
-import {AtomVisualizationType, OriginalSmilesDrawerNumericSettings, ShowCarbonsType, ThemesType} from 'smiles-drawer'
 import {DEFAULT_SETTINGS} from './definitions/settings'
-import {Popup} from './popup-util'
 
 /* See https://docs.obsidian.md/Plugins/User+interface/Settings  */
 export default class SmilesDrawerSettingsTab extends PluginSettingTab {
