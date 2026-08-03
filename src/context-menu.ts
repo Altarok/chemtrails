@@ -38,7 +38,7 @@ export class ContextMenuBuilder {
           const svgData = new XMLSerializer().serializeToString(this.svgEl)
 
           /* Create a hidden canvas element wrapper to convert vector to pixel raster data */
-          const canvas: HTMLCanvasElement = window.document.createElement('canvas')
+          const canvas: HTMLCanvasElement = window.createEl('canvas')
           const ctx = canvas.getContext('2d')
           if (!ctx) return
 

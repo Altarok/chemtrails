@@ -101,7 +101,7 @@ export default class SmilesDrawerToObsidianPlugin extends Plugin {
     container.style.display = cssStyleDisplay
 
     /* Set up the target SVG element with responsive attributes */
-    const svgEl: SVGSVGElement = window.document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    const svgEl: SVGSVGElement = window.createSvg('svg')
     svgEl.setAttrs({'width': 'auto', 'height': localSettings.height})
 
     container.appendChild(svgEl)
