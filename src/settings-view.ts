@@ -230,10 +230,25 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
               min: 1, max: 10, step: 1,
             }
           },
+          {
+            name: 'Reset values?',
+            desc: `There's no fail-safe. This is 1 click only.`,
+            render: (setting) => {
+              setting.addButton((bb) =>
+                bb.setButtonText("Reset")
+                .setDestructive()
+                .onClick(async () => {
+                    /* JS Hint: be aware that we can't just overwrite one with the other */
+                    this.plugin.settings = Object.assign({}, DEFAULT_SETTINGS)
+                    await this.plugin.saveSettings()
+                    this.update()
+                  }
+                )
+              )
+            }
+          }
         ]
-      },
-
-
+      }
     ]
   }
 
@@ -311,7 +326,7 @@ export default class SmilesDrawerSettingsTab extends PluginSettingTab {
     new Setting(containerEl).setName('Reset values').setDesc('Reset everything to default.')
     .addButton((button) => button
     .setButtonText('Reset')
-    .setWarning() /* red color TODO #v1.13.0 change to .setDestructive() */
+    .setDestructive() /* red color */
     .onClick(async () => {
       /* JS Hint: be aware that we can't just overwrite one with the other */
       this.plugin.settings = Object.assign({}, DEFAULT_SETTINGS)
